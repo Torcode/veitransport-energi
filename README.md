@@ -1,5 +1,7 @@
 # veitransport-energi
 
+[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 29 tester uten nettverk, mot committede uttrekk; nettverkskrevende kildekontroller inngår ikke.
+
 Statistikk- og beslutningsgrunnlag for energiomstillingen i norsk veitransport: hvordan utskiftingen av personbilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet – historisk og i betingede scenarioer fram mot 2035.
 
 **Status: under utvikling, fase 1 av 7.** Designporten (fase 0) ble gjennomført og godkjent 2026-08-10. Hovedtall, figurer og beslutningsflate publiseres først når datalaget og kontrollene i fase 1–2 er på plass; det som ligger her nå, er designdokumentene, kilderegisteret og designportens etterprøvbare analysegrunnlag.
