@@ -1,0 +1,79 @@
+{
+ "built_utc": "2026-08-10T23:55:17+00:00",
+ "git_commit": "ba6acb8658baa12950daaa1f9a161f8e7c242f5e",
+ "python": "3.11.15",
+ "tables": {
+  "sales_03687": {
+   "table_id": "03687",
+   "source_updated": "2016-08-15T08:00:00Z",
+   "first_period": "1995M01",
+   "last_period": "2016M07",
+   "rows": 777,
+   "sha256_raw": "7da3cc1abae9bce6b916d8d58c88e8b8ff8a453d9eadaea2a833877ac839220f",
+   "sha256_extract": "c25f1cd33a3edfb415f026580a7e7d15271151a2603297ba118818b2e9094fe5"
+  },
+  "sales_11174": {
+   "table_id": "11174",
+   "source_updated": "2022-02-21T07:00:00Z",
+   "first_period": "2010M01",
+   "last_period": "2022M01",
+   "rows": 580,
+   "sha256_raw": "b537c2e9688d34ccfe51bc66d97147644e2dae5db52364ec38939521ee4eff87",
+   "sha256_extract": "505ad0e31d3daa3d4266099ee20a2d22e5488b19657bb79ae1b7d451406792d4"
+  },
+  "sales_13585": {
+   "table_id": "13585",
+   "source_updated": "2026-07-23T06:00:00Z",
+   "first_period": "2021M01",
+   "last_period": "2026M06",
+   "rows": 792,
+   "sha256_raw": "8888157f75dfe43abf8219a52b296ae925a1755e544063dbb98be35dbb3203d7",
+   "sha256_extract": "3f05978f87ecf88e3af4dfbeeee21ce5b143c9e3711929983dbd56604a7cdcf8"
+  },
+  "prices_09654": {
+   "table_id": "09654",
+   "source_updated": "2026-07-23T06:00:00Z",
+   "first_period": "1986M08",
+   "last_period": "2026M06",
+   "rows": 958,
+   "sha256_raw": "8d56be0dd8ebea5546d1fe7a3fc45308f4df77826715d7ee59950371d06875e6",
+   "sha256_extract": "8f33a8083eabcc583b5cada3113e0433f5f729169fbce0dc67a7f5b04e090772"
+  },
+  "firstreg_14020": {
+   "table_id": "14020",
+   "source_updated": "2026-08-04T06:00:00Z",
+   "first_period": "1995M01",
+   "last_period": "2026M07",
+   "rows": 6064,
+   "sha256_raw": "f825cd0dd2bdbac85cf84f029b5bdbfd077dcb9c7218de01c60001e9cfa4fb8e",
+   "sha256_extract": "b48dfd1a3087b814b7678633eeaebe2f4ba6958292e882c6afd8fed7cf492087"
+  },
+  "stock_07849": {
+   "table_id": "07849",
+   "source_updated": "2026-03-06T07:00:00Z",
+   "first_period": "2008",
+   "last_period": "2025",
+   "rows": 216,
+   "sha256_raw": "2d9799702daef53d27950f70d81dc492fce9bf01552b39049888c748ac8bbae8",
+   "sha256_extract": "a186c64500ae5c8f835cdb68d716a0964a44802b2fdef5f335e632c9e3d3cdb3"
+  },
+  "km_12577": {
+   "table_id": "12577",
+   "source_updated": "2026-04-08T06:00:00Z",
+   "first_period": "2005",
+   "last_period": "2025",
+   "rows": 3024,
+   "sha256_raw": "7182c1433771c5a4cf60c9c882aec51569269f369abf51d5369681c1eab68c8e",
+   "sha256_extract": "9f98ced24e288a34221c1309812110b86473bbe7c81fe1ef33ce37c9dd46e5e1"
+  },
+  "energybalance_11561_road": {
+   "table_id": "11561",
+   "source_updated": "2026-06-12T06:00:00Z",
+   "first_period": "1990",
+   "last_period": "2025",
+   "rows": 2448,
+   "sha256_raw": "ea312a21d969280b575c1db49541f3dc53df36111206312342e65f1f5eb1f68a",
+   "sha256_extract": "869de425aeef51000060072a1d2d673f7ea8cfac8bd20f8dbd0f3e45b81a1ebf"
+  }
+ }
+}
