@@ -1,0 +1,236 @@
+{
+ "A_skjot_03687_vs_11174_2010M01_2016M07": {
+  "bensin(03 vs 03)": {
+   "n": 79,
+   "mean_ratio": 0.9993151592337243,
+   "mean_abs_pct_diff": 0.09282682248931699,
+   "median_abs_pct_diff": 0.0,
+   "max_abs_pct_diff": 5.319148936170213,
+   "share_months_abs_diff_gt_1pct": 0.02531645569620253,
+   "growth_corr": 0.9934140775157692
+  },
+  "diesel(04 vs 04a+04b)": {
+   "n": 79,
+   "mean_ratio": 0.9995767554122401,
+   "mean_abs_pct_diff": 0.13707865789093734,
+   "median_abs_pct_diff": 0.0,
+   "max_abs_pct_diff": 2.507836990595611,
+   "share_months_abs_diff_gt_1pct": 0.012658227848101266,
+   "growth_corr": 0.9979541050324433
+  },
+  "diesel(04 vs 04b alene)": {
+   "n": 79,
+   "mean_ratio": 0.7629968672171141,
+   "mean_abs_pct_diff": 23.70031327828859,
+   "median_abs_pct_diff": 23.48993288590604,
+   "max_abs_pct_diff": 29.906542056074763,
+   "share_months_abs_diff_gt_1pct": 1.0,
+   "growth_corr": 0.927976019881212
+  },
+  "total(00 vs 00)": {
+   "n": 79,
+   "mean_ratio": 0.9776259190699711,
+   "mean_abs_pct_diff": 2.426014061067153,
+   "median_abs_pct_diff": 1.1065006915629323,
+   "max_abs_pct_diff": 10.829817158931084,
+   "share_months_abs_diff_gt_1pct": 0.5063291139240507,
+   "growth_corr": 0.943043734267497
+  }
+ },
+ "A_sesongprofil_korr": {
+  "bensin": 0.999755596743193,
+  "diesel": 0.9996641482488761
+ },
+ "B_skjot_11174_vs_13585_2022M01": {
+  "Total": {
+   "bensin_11174": 64.0,
+   "bensin_13585": 64.0,
+   "bensin_pct_diff": 0.0,
+   "autodiesel_11174": 223.0,
+   "autodiesel_13585": 228.0,
+   "autodiesel_pct_diff": 2.242152466367713,
+   "anleggsdiesel_11174": 69.0,
+   "anleggsdiesel_13585": 70.0,
+   "anleggsdiesel_pct_diff": 1.4492753623188406
+  },
+  "Petroleum": {
+   "bensin_11174": 64.0,
+   "bensin_13585": 64.0,
+   "bensin_pct_diff": 0.0,
+   "autodiesel_11174": 223.0,
+   "autodiesel_13585": 223.0,
+   "autodiesel_pct_diff": 0.0,
+   "anleggsdiesel_11174": 69.0,
+   "anleggsdiesel_13585": 69.0,
+   "anleggsdiesel_pct_diff": 0.0
+  }
+ },
+ "C_13585_andel_ikke_prikket_per_aar": {
+  "Biodrivstoff": {
+   "2021": 0.0,
+   "2022": 0.75,
+   "2023": 0.75,
+   "2024": 0.896,
+   "2025": 0.792,
+   "2026": 0.875
+  },
+  "Petroleum": {
+   "2021": 1.0,
+   "2022": 1.0,
+   "2023": 1.0,
+   "2024": 1.0,
+   "2025": 1.0,
+   "2026": 1.0
+  },
+  "Total": {
+   "2021": 0.0,
+   "2022": 1.0,
+   "2023": 1.0,
+   "2024": 1.0,
+   "2025": 1.0,
+   "2026": 1.0
+  }
+ },
+ "C_13585_status_2021": {
+  "..": 96
+ },
+ "C_bioandel_2025_prosent_av_totalvolum": {
+  "autodiesel_reint_bio": 2.21,
+  "bilbensin_reint_bio": 0.0,
+  "NB": "Reint bio = eige maltall; iblanda bio ligg i petroleumsvolumet og kan ikkje skiljast ut her."
+ },
+ "D_aarssalg_mill_liter": {
+  "11174_2010": {
+   "bensin": 1625.0,
+   "autodiesel": 2523.0
+  },
+  "11174_2019": {
+   "bensin": 1029.0,
+   "autodiesel": 2925.0
+  },
+  "13585_2022_total": {
+   "bensin": 922.0,
+   "autodiesel": 2929.0
+  },
+  "13585_2025_total": {
+   "bensin": 826.0,
+   "autodiesel": 2353.0
+  }
+ },
+ "D_nyreg_personbiler_elandel_pct": {
+  "2010": 0.3,
+  "2015": 17.9,
+  "2020": 53.4,
+  "2023": 81.1,
+  "2024": 87.7,
+  "2025": 94.7
+ },
+ "D_nyreg_personbiler_2025": {
+  "sum": 184705,
+  "el": 174922,
+  "fossil": 4218,
+  "hybrid": 5565
+ },
+ "D_nyreg_2025_nye_vs_bruktimport": {
+  "B": {
+   "sum": 7858,
+   "el_pct": 68.1
+  },
+  "N": {
+   "sum": 176847,
+   "el_pct": 95.9
+  }
+ },
+ "D_bestand_personbiler": {
+  "2008": {
+   "sum": 2196107,
+   "bensin": 1596852,
+   "diesel": 597391,
+   "el": 1693,
+   "annet_hovedsakelig_hybrid": 126,
+   "el_andel_pct": 0.1
+  },
+  "2015": {
+   "sum": 2609263,
+   "bensin": 1295739,
+   "diesel": 1243235,
+   "el": 69134,
+   "annet_hovedsakelig_hybrid": 1013,
+   "el_andel_pct": 2.6
+  },
+  "2020": {
+   "sum": 2809358,
+   "bensin": 950131,
+   "diesel": 1246671,
+   "el": 340002,
+   "annet_hovedsakelig_hybrid": 272314,
+   "el_andel_pct": 12.1
+  },
+  "2024": {
+   "sum": 2879728,
+   "bensin": 715217,
+   "diesel": 1005761,
+   "el": 788750,
+   "annet_hovedsakelig_hybrid": 369835,
+   "el_andel_pct": 27.4
+  },
+  "2025": {
+   "sum": 2935738,
+   "bensin": 676614,
+   "diesel": 942780,
+   "el": 945182,
+   "annet_hovedsakelig_hybrid": 371004,
+   "el_andel_pct": 32.2
+  }
+ },
+ "D_kjorelengde_personbiler": {
+  "siste_aar": 2025,
+  "gjsn_km": {
+   "bensin": 7622.0,
+   "diesel": 11196.0,
+   "el": 13453.0,
+   "alle": 11350.0
+  },
+  "total_mill_km": {
+   "bensin": 5457.2,
+   "diesel": 12216.6,
+   "el": 13227.0,
+   "alle": 36091.1
+  },
+  "el_andel_av_km_pct": 36.6
+ },
+ "D_implisitt_antall_12577_vs_bestand_07849": {
+  "aar": 2025,
+  "implisitt_12577": {
+   "bensin": 715980,
+   "diesel": 1091157,
+   "el": 983200
+  },
+  "bestand_07849": {
+   "bensin": 676614,
+   "diesel": 942780,
+   "el": 945182
+  },
+  "NB": "12577 dekker kjoretoy som var registrert i lopet av aaret; 07849 er pr 31.12. Avvik ventes."
+ },
+ "D_energibalanse_veitransport_el_GWh": {
+  "2010": 4.0,
+  "2015": 162.0,
+  "2020": 1089.0,
+  "2022": 2002.0,
+  "2023": 2472.0,
+  "2024": 2783.0
+ },
+ "D_implisitt_brennverdi_magnitudesjekk": {
+  "2023": {
+   "bensin_MJ_per_liter_implisitt": 22.6,
+   "autodiesel_MJ_per_liter_implisitt": 32.16,
+   "NB": "Petroleumsvolum 13585 inkluderer iblanda bio; energibalansen er ekskl. bio -> implisitt faktor er kun magnitudesjekk."
+  },
+  "2024": {
+   "bensin_MJ_per_liter_implisitt": 24.59,
+   "autodiesel_MJ_per_liter_implisitt": 32.64,
+   "NB": "Petroleumsvolum 13585 inkluderer iblanda bio; energibalansen er ekskl. bio -> implisitt faktor er kun magnitudesjekk."
+  }
+ }
+}

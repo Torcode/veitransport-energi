@@ -1,0 +1,15 @@
+original_variabel,original_enhet,onsket_enhet,konvertering,kilde_konvertering,usikkerhet,kontrollstatus
+salg petroleumsprodukter (03687/11174/13585),mill. liter,liter,multipliser med 1e6,matematisk identitet (SI-prefiks),ingen,verifisert
+salg petroleumsprodukter,mill. liter,m3,multipliser med 1000,matematisk identitet (1 m3 = 1000 liter),ingen,verifisert
+energibalanseposter (11561),PJ,GWh,"multipliser med 277,778","matematisk identitet (1 PJ = 1e15 J; 1 GWh = 3,6e12 J)",ingen,verifisert
+energibalanseposter (11561),GWh,TWh,divider med 1000,matematisk identitet,ingen,verifisert
+kjørelengde (12576/12577),mill. km,km,multipliser med 1e6,matematisk identitet,ingen,verifisert
+energi,MJ,kWh,"multipliser med 0,27778","matematisk identitet (1 kWh = 3,6 MJ)",ingen,verifisert
+drivstofforbruk personbil,liter per mil,liter per 100 km,multipliser med 10,matematisk identitet (1 mil = 10 km),ingen,verifisert
+bilbensin volum,liter,MJ,brennverdi x tetthet - faktor IKKE fastsatt ennå,"SSB Notater 2018/45 vedlegg A (identifisert, ikke lest; 404 på vedleggsforsøk i fase 0)",ukjent til kilden er lest; påvirkes av bioinnblanding i produktet,ikke_verifisert - energitall for flytende drivstoff holdes ute av offentlige hovedtall til dette er lukket (D-0011)
+autodiesel volum,liter,MJ,brennverdi x tetthet - faktor IKKE fastsatt ennå,som over,som over; iblandet FAME/HVO har annen brennverdi enn fossil diesel,ikke_verifisert
+biodrivstoff (rent og iblandet),liter,MJ,krever produktmiks (FAME/HVO/etanol) x respektive brennverdier,ikke fastsatt; kandidater: Notater 2018/45 vedlegg A; Miljødirektoratets utslippsregnskapsfaktorer,høy - produktmiksen i omsetningskravet varierer over år,ikke_verifisert
+elbil personbil energibruk,kWh/km,kWh/km,brukes direkte som scenarioparameter,"NVE-notat om transport og kraftsystemet (Spilde/Skotland): 0,2 kWh/km personbil (måledatabasert)",vesentlig: notatet er fra ca. 2016-2017 og omtaler ikke ladetap; moderne flåte kan avvike; varieres i sensitivitetsanalysen,verifisert_kilde_med_navngitte_svakheter
+elbil varebil energibruk,kWh/km,kWh/km,brukes direkte som scenarioparameter,"samme kilde: 0,25 kWh/km varebil",som over,verifisert_kilde_med_navngitte_svakheter
+kjøretøybestand (07849) mot kjøretøy-i-bruk (12577 implisitt),antall per 31.12,antall i bruk i året,INGEN konvertering - definisjonene holdes atskilt,egen konsistensmåling fase 0 (analyze_design_gate.py),"målt avvik 2025: el +4,0 %, bensin +5,8 %, diesel +15,7 % (i-bruk over 31.12-bestand)",dokumentert_definisjonsavvik
+drivstoffpriser (09654),kr per liter (nominell),kr per liter (fast prisnivå),deflatering med KPI - tabellvalg ikke gjort,SSB konsumprisindeks (tabell velges i fase 1),avhenger av deflatorvalg,ikke_verifisert

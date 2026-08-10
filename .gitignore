@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS/redigering
+.DS_Store
+Thumbs.db
+*.swp
+
+# Lokale leveransepakker (ligger ikke i repoet)
+analysis_design_gate_fase0.zip
+
+# RStudio (prosjektmappen lokalt kan inneholde dette)
+.Rproj.user/
+*.Rproj
