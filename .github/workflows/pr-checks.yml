@@ -1,0 +1,26 @@
+# PR-kontroller: raske, deterministiske tester UTEN nettverk.
+# Kjører lint (ruff) og pytest mot committede uttrekk i data/extracts.
+# Kildekontroller som krever nettverk hører IKKE hjemme her (egen, manuell workflow senere).
+name: pr-kontroller
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  kontroller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Installer pakken med utviklingsavhengigheter
+        run: pip install -e ".[dev]"
+      - name: Lint (ruff)
+        run: ruff check src tests
+      - name: Tester (pytest, uten nettverk, mot committede uttrekk)
+        run: pytest
