@@ -60,19 +60,23 @@ def dieselsum_series(s03: pd.DataFrame, s11: pd.DataFrame) -> pd.DataFrame:
     return out.reset_index()
 
 
-def autodiesel_segments(
-    s11: pd.DataFrame, s13: pd.DataFrame, *, allow_cross_break: bool = False
-) -> pd.DataFrame:
-    """Autodiesel som to adskilte segmenter (2010M01-2019M12 og 2020M01-).
+def continuous_autodiesel_series(*_args, **_kwargs) -> pd.DataFrame:
+    """Den sammenhengende autodieselserien finnes bevisst ikke.
 
-    allow_cross_break finnes bare for å kunne demonstrere at vakten virker i
-    test; produksjonskode skal aldri sette den.
+    Funksjonen er med for at forbudet skal være synlig og kjørbart der noen
+    ville lett etter operasjonen, i stedet for å være en regel i et dokument.
+    Den kaster alltid.
     """
-    if allow_cross_break:
-        raise SpliceError(
-            "D-0002/D-0003: autodiesel skal ikke settes sammen til én serie over "
-            f"{BREAK_MONTH_AUTODIESEL} (dokumentert innsamlingsbrudd 2012-2019)."
-        )
+    raise SpliceError(
+        "D-0002/D-0003: autodiesel skal ikke settes sammen til én serie over "
+        f"{BREAK_MONTH_AUTODIESEL}. SSB dokumenterer at innsamlingen var for lav "
+        "2012-2019 og ble korrigert fra 2020, uten bakoverkorrigering; en "
+        "sammenhengende serie ville skjule bruddet. Bruk autodiesel_segments()."
+    )
+
+
+def autodiesel_segments(s11: pd.DataFrame, s13: pd.DataFrame) -> pd.DataFrame:
+    """Autodiesel som to adskilte segmenter (2010M01-2019M12 og 2020M01-)."""
     p11 = _pivot(s11, "PetroleumProd")["04b"].rename("value").to_frame()
     pre = p11[p11.index < BREAK_MONTH_AUTODIESEL].copy()
     pre["segment"] = "autodiesel_2010_2019"

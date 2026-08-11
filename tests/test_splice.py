@@ -7,6 +7,7 @@ from veitransport_energi.splice import (
     SpliceError,
     autodiesel_segments,
     bensin_series,
+    continuous_autodiesel_series,
     dieselsum_series,
     overlap_stats,
 )
@@ -68,6 +69,6 @@ def test_autodiesel_har_to_adskilte_segmenter(extracts):
     assert serie["Tid"].is_unique
 
 
-def test_vakt_mot_skjot_over_2020_bruddet(extracts):
+def test_sammenhengende_autodieselserie_er_forbudt(extracts):
     with pytest.raises(SpliceError, match="2020"):
-        autodiesel_segments(extracts["sales_11174"], extracts["sales_13585"], allow_cross_break=True)
+        continuous_autodiesel_series(extracts["sales_11174"], extracts["sales_13585"])

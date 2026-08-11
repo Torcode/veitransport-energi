@@ -37,6 +37,14 @@ def test_kontrakt_fanger_hull_i_tidsaksen(extracts):
         check_extract(df, spec)
 
 
+def test_kontrakt_fanger_ikke_numerisk_verdikolonne(extracts):
+    spec = SPECS_BY_NAME["prices_09654"]
+    df = extracts[spec.name].copy()
+    df["value"] = df["value"].astype(str)
+    with pytest.raises(ContractError, match="ikke numerisk"):
+        check_extract(df, spec)
+
+
 def test_kontrakt_fanger_prikket_celle_med_verdi(extracts):
     spec = SPECS_BY_NAME["sales_13585"]
     df = extracts[spec.name].copy()
