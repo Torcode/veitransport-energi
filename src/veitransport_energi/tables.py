@@ -88,6 +88,29 @@ SPECS: list[TableSpec] = [
         description="Førstegangsregistrerte 1995M01-; fossil er ikke delt i bensin/diesel",
     ),
     TableSpec(
+        table_id="12906",
+        name="firstreg_12906",
+        value_codes={
+            "Region": ["0"],
+            "TypeRegistrering": ["N", "B"],
+            "DrivstoffType": ["1", "2", "5", "13", "14", "15", "16", "17", "3", "4", "6"],
+            "ContentsCode": ["Personbil1", "Varebil4", "Bobiler", "Kombibil5", "Ambulanse2"],
+            "Tid": ["*"],
+        },
+        freq="A",
+        expected_units={
+            "Personbil1": "kjøretøy", "Varebil4": "kjøretøy", "Bobiler": "kjøretøy",
+            "Kombibil5": "kjøretøy", "Ambulanse2": "kjøretøy",
+        },
+        key_dims=("TypeRegistrering", "DrivstoffType", "ContentsCode"),
+        description=(
+            "Førstegangsregistrerte 2019- med FULL drivstoffdeling (bensin/diesel/el/hydrogen/"
+            "ladbar og ikke-ladbar hybrid) og bobiler skilt fra varebiler. Løser to mangler ved "
+            "14020: udelt fossil, og varebiler slått sammen med campingbiler (D-0020). "
+            "EuroKlasser eliminert (summen)."
+        ),
+    ),
+    TableSpec(
         table_id="07849",
         name="stock_07849",
         value_codes={
@@ -103,7 +126,12 @@ SPECS: list[TableSpec] = [
         table_id="12577",
         name="km_12577",
         value_codes={
-            "Kjoretoytype": ["0", "15", "20", "29", "30", "00"],
+            # Alle kjøretøytyper hentes, både aggregatene (0, 00, 15, 16, 17) og
+            # underkategoriene (20-33). Uten underkategoriene kan ikke
+            # koblingskontrollen mot bestand og førstegangsregistreringer avgjøre
+            # hva aggregatene faktisk inneholder (fase 2, D-0020).
+            "Kjoretoytype": ["0", "00", "15", "16", "17", "20", "21", "22", "23", "24",
+                             "25", "26", "27", "28", "29", "30", "31", "32", "33"],
             "DrivstoffType": ["0", "1", "2", "18", "14", "15", "16", "17", "3", "4", "13", "7"],
             "ContentsCode": ["Kjorelengde", "GjsnittKjorelengde"], "Tid": ["*"],
         },
