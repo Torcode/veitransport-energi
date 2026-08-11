@@ -1,0 +1,81 @@
+{
+ "built_utc": "2026-08-11T21:50:26+00:00",
+ "git_commit": "b6caf564a066a60b83bfd4449ea528e7e417026e",
+ "code_version": "0.1.0",
+ "python": "3.11.15",
+ "data_vintage": {
+  "sales_03687": {
+   "table_id": "03687",
+   "source_updated": "2016-08-15T08:00:00Z",
+   "last_period": "2016M07",
+   "sha256_extract": "c25f1cd33a3edfb415f026580a7e7d15271151a2603297ba118818b2e9094fe5"
+  },
+  "sales_11174": {
+   "table_id": "11174",
+   "source_updated": "2022-02-21T07:00:00Z",
+   "last_period": "2022M01",
+   "sha256_extract": "505ad0e31d3daa3d4266099ee20a2d22e5488b19657bb79ae1b7d451406792d4"
+  },
+  "sales_13585": {
+   "table_id": "13585",
+   "source_updated": "2026-07-23T06:00:00Z",
+   "last_period": "2026M06",
+   "sha256_extract": "3f05978f87ecf88e3af4dfbeeee21ce5b143c9e3711929983dbd56604a7cdcf8"
+  },
+  "prices_09654": {
+   "table_id": "09654",
+   "source_updated": "2026-07-23T06:00:00Z",
+   "last_period": "2026M06",
+   "sha256_extract": "8f33a8083eabcc583b5cada3113e0433f5f729169fbce0dc67a7f5b04e090772"
+  },
+  "firstreg_14020": {
+   "table_id": "14020",
+   "source_updated": "2026-08-04T06:00:00Z",
+   "last_period": "2026M07",
+   "sha256_extract": "b48dfd1a3087b814b7678633eeaebe2f4ba6958292e882c6afd8fed7cf492087"
+  },
+  "firstreg_12906": {
+   "table_id": "12906",
+   "source_updated": "2026-03-06T07:00:00Z",
+   "last_period": "2025",
+   "sha256_extract": "0fbf899e3229ed366c8568585cf4ce397cf6865b576125668184b0143d25476e"
+  },
+  "stock_07849": {
+   "table_id": "07849",
+   "source_updated": "2026-03-06T07:00:00Z",
+   "last_period": "2025",
+   "sha256_extract": "a186c64500ae5c8f835cdb68d716a0964a44802b2fdef5f335e632c9e3d3cdb3"
+  },
+  "km_12577": {
+   "table_id": "12577",
+   "source_updated": "2026-04-08T06:00:00Z",
+   "last_period": "2025",
+   "sha256_extract": "0c47159b4533d1d7f1b9cc137bc0d8a4b1e44cd3880d2098bee23a3545316838"
+  },
+  "energybalance_11561_road": {
+   "table_id": "11561",
+   "source_updated": "2026-06-12T06:00:00Z",
+   "last_period": "2025",
+   "sha256_extract": "869de425aeef51000060072a1d2d673f7ea8cfac8bd20f8dbd0f3e45b81a1ebf"
+  }
+ },
+ "artifacts": {
+  "historical_statistics.csv": {
+   "rows": 1418,
+   "sha256": "b05c49c54081e38ceb4b15496a782f01aa6401884ef51be2ae59fbc6e5e4f93c"
+  },
+  "control_group_sums.csv": {
+   "rows": 42,
+   "sha256": "eeb23ae2b3474eb374acf25d629073265ec2fb59f7ec112a1a85a4491abfd280"
+  },
+  "control_stock_vs_activity.csv": {
+   "rows": 90,
+   "sha256": "f997285e78a6e00ed90771fbfc2e4186f5d11407d129ed7118bc6651c29937f1"
+  },
+  "control_energy_reconciliation.csv": {
+   "rows": 16,
+   "sha256": "bc2edc86b655d2f2acae27825d83a1e6fd6339fa44074a50113d4d9e474709e5"
+  }
+ },
+ "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her."
+}
