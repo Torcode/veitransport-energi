@@ -1,0 +1,15 @@
+# Datafilene er maskingenererte uttrekk fra SSBs API (D-0017), ikke redigert for hånd.
+# Merkingen gjør at GitHub kollapser dem i diff-visningen, slik at en pull request
+# viser kode- og dokumentendringene framfor tusenvis av datalinjer. Filene er
+# fortsatt versjonert og fullt lesbare — bare skjult som standard i diffen.
+data/raw/** linguist-generated=true
+data/extracts/** linguist-generated=true
+analysis/design_gate/api_cache/** linguist-generated=true
+analysis/design_gate/extracts/** linguist-generated=true
+
+# Konsistente linjeskift i tekstfiler uansett plattform.
+* text=auto
+*.csv text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
