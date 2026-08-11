@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-11T21:50:26+00:00",
- "git_commit": "b6caf564a066a60b83bfd4449ea528e7e417026e",
+ "built_utc": "2026-08-11T22:09:38+00:00",
+ "git_commit": "7b3988fa9a4e1c7eeca568a618ee842fc70ac84e",
  "code_version": "0.1.0",
  "python": "3.11.15",
  "data_vintage": {
@@ -75,6 +75,14 @@
   "control_energy_reconciliation.csv": {
    "rows": 16,
    "sha256": "bc2edc86b655d2f2acae27825d83a1e6fd6339fa44074a50113d4d9e474709e5"
+  },
+  "reconstruction_net_retirement.csv": {
+   "rows": 104,
+   "sha256": "41e51ea16d921aef928b059b47b64ebb961f0b76fae8bf357c48184a9824579c"
+  },
+  "reconstruction_intensity_bounds.csv": {
+   "rows": 126,
+   "sha256": "42aac2806f31ce9c0c4ab2f45422ca56c91c550ddd7bf47f4e18d5c484ec4aac"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her."
