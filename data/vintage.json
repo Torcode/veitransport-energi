@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-11T21:16:35+00:00",
- "git_commit": "bcba222cf2987e151fa0889579359a826599834f",
+ "built_utc": "2026-08-11T23:34:03+00:00",
+ "git_commit": "c0ac82cbc3542ef9c0e4773fb6861e5cabbe01fc",
  "python": "3.11.15",
  "tables": {
   "sales_03687": {
@@ -56,6 +56,15 @@
    "rows": 770,
    "sha256_raw": "ea7928b8e2160f4d32eb34e413b798023a402bc8f032810d432a1693346bef7f",
    "sha256_extract": "0fbf899e3229ed366c8568585cf4ce397cf6865b576125668184b0143d25476e"
+  },
+  "age_08581": {
+   "table_id": "08581",
+   "source_updated": "2026-03-06T07:00:00Z",
+   "first_period": "2008",
+   "last_period": "2025",
+   "rows": 216,
+   "sha256_raw": "78a0a58b56ab1b49adb1334af021ccaf7291ddf7bb1947f5c57494be9d4e0f3f",
+   "sha256_extract": "232a29c1fb5107f9c0de5b3ab3bf830abcd0132a82d9e0968e07b8fd65e79b29"
   },
   "stock_07849": {
    "table_id": "07849",

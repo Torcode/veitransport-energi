@@ -66,6 +66,16 @@ table_id,extract,dimension,dimension_label,code,code_label,unit,role,note
 12906,firstreg_12906,ContentsCode,statistikkvariabel,Personbil1,Personbiler,kjøretøy,statistikkvariabel,
 12906,firstreg_12906,ContentsCode,statistikkvariabel,Varebil4,Varebiler,kjøretøy,statistikkvariabel,
 12906,firstreg_12906,Tid,år,2019--2025,7 perioder (år),,tid,
+08581,age_08581,(tabell),08581: Alder og bilmerke på person- og varebiler 2008-2024,note1,,,tabellnote,Fra og med statistikkåret 2024 er alderskorreksjon fjernet fra aldersberegninger for kjøretøy før fordeling til aldersgrupper.
+08581,age_08581,Alder,alder,02,Under 4 år,,klassifisering,
+08581,age_08581,Alder,alder,03,4 - 7 år,,klassifisering,
+08581,age_08581,Alder,alder,04,8 - 11 år,,klassifisering,
+08581,age_08581,Alder,alder,05,12 - 15 år,,klassifisering,
+08581,age_08581,Alder,alder,06,16 - 20 år,,klassifisering,
+08581,age_08581,Alder,alder,07,Over 20 år,,klassifisering,
+08581,age_08581,ContentsCode,statistikkvariabel,Personbiler,Registrerte personbiler,antall,statistikkvariabel,
+08581,age_08581,ContentsCode,statistikkvariabel,Varebiler,Registrerte varebiler,antall,statistikkvariabel,
+08581,age_08581,Tid,år,2008--2025,18 perioder (år),,tid,
 07849,stock_07849,(tabell),"07849: Drivstofftype, type kjøring og kjøretøygrupper (K) 2008-2024",note1,,,tabellnote,Annet drivstoff inneholder hovedsakelig hybrid.
 07849,stock_07849,(tabell),"07849: Drivstofftype, type kjøring og kjøretøygrupper (K) 2008-2024",note2,,,tabellnote,Fra og med statistikkåret 2024 får kjøretøy med uoppgitt kommune- og fylkeskode koder 9999 Uoppgitt kommune og 99 Uoppgitt fylke. Til og med statistikkåret 2023 er slike kjøretøy forsøkt tilordnet kommuner ut fra annen eierinformasjon.
 07849,stock_07849,(tabell),"07849: Drivstofftype, type kjøring og kjøretøygrupper (K) 2008-2024",note3,,,tabellnote,Fra og med statistikkåret 2025 er kjøretøy med registrerte leasingtakere plassert i leasingtakernes kommuner/fylker. Til og med statistikkåret 2024 er slike kjøretøy plassert i eiernes kommuner/fylker. Dette er på grunn av obligatorisk registering av leasingtakere i Kjøretøyregisteret fra 1. mars 2025.

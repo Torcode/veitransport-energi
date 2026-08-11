@@ -18,3 +18,9 @@ timestamp_utc,url,http_status,bytes
 2026-08-11T21:13:52+00:00,"https://data.ssb.no/api/pxwebapi/v2-beta/tables/12577/data?lang=no&outputFormat=json-stat2&valueCodes%5BKjoretoytype%5D=0,00,15,16,17,20,21,22,23,24,25,26,27,28,29,30,31,32,33&valueCodes%5BDrivstoffType%5D=0,1,2,18,14,15,16,17,3,4,13,7&valueCodes%5BContentsCode%5D=Kjorelengde,GjsnittKjorelengde&valueCodes%5BTid%5D=*",200,112305
 2026-08-11T21:15:44+00:00,https://data.ssb.no/api/pxwebapi/v2-beta/tables/12906/metadata?lang=no,200,45767
 2026-08-11T21:16:38+00:00,"https://data.ssb.no/api/pxwebapi/v2-beta/tables/12906/data?lang=no&outputFormat=json-stat2&valueCodes%5BRegion%5D=0&valueCodes%5BTypeRegistrering%5D=N,B&valueCodes%5BDrivstoffType%5D=1,2,5,13,14,15,16,17,3,4,6&valueCodes%5BContentsCode%5D=Personbil1,Varebil4,Bobiler,Kombibil5,Ambulanse2&valueCodes%5BTid%5D=*",200,6479
+2026-08-11T23:30:31+00:00,https://data.ssb.no/api/pxwebapi/v2-beta/tables?lang=no&query=kj%C3%B8ret%C3%B8y%20alder%20bestand&pageSize=12,200,274
+2026-08-11T23:30:33+00:00,https://data.ssb.no/api/pxwebapi/v2-beta/tables?lang=no&query=registrerte%20kj%C3%B8ret%C3%B8y%20alder&pageSize=12,200,1619
+2026-08-11T23:30:36+00:00,https://data.ssb.no/api/pxwebapi/v2-beta/tables?lang=no&query=bilparkens%20alder&pageSize=12,200,266
+2026-08-11T23:30:53+00:00,https://data.ssb.no/api/pxwebapi/v2-beta/tables/08581/metadata?lang=no,200,18261
+2026-08-11T23:31:30+00:00,"https://data.ssb.no/api/pxwebapi/v2-beta/tables/08581/data?lang=no&outputFormat=json-stat2&valueCodes%5BBilmerker%5D=0000&valueCodes%5BAlder%5D=02,03,04,05,06,07&valueCodes%5BContentsCode%5D=Personbiler&valueCodes%5BTid%5D=*",200,2858
+2026-08-11T23:31:59+00:00,"https://data.ssb.no/api/pxwebapi/v2-beta/tables/08581/data?lang=no&outputFormat=json-stat2&valueCodes%5BAlder%5D=02,03,04,05,06,07&valueCodes%5BContentsCode%5D=Personbiler,Varebiler&valueCodes%5BTid%5D=*",200,3930

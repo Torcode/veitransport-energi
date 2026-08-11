@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import pandas as pd
 
+from .datasets import read_extract
 from .energy import MJ_PER_LITER
 
 # Energibalansen identifiseres på KODE, ikke etikett. Produktdimensjonen er
@@ -110,3 +111,55 @@ def energy_reconciliation(
             "eb_per_salg": (fossil + bio) / salg_pj,
         })
     return pd.DataFrame(rows).set_index("aar")
+
+
+def utility_factor_identification(
+    bev_intensity_range: tuple[float, ...] = (0.18, 0.20, 0.22, 0.24),
+) -> pd.DataFrame:
+    """Kan utility factor bestemmes fra prosjektets egne data? Svaret er nei.
+
+    Energibalansens elpost fordeles på rene elbiler og ladbare hybrider. Antar man
+    en intensitet for de rene elbilene, følger hybridenes elektriske kjørelengde —
+    og dermed utility factor — som residual. Tabellen viser hvor sterkt den
+    residualen avhenger av antakelsen.
+
+    Resultatet er grunnlaget for at utility factor behandles som ekstern
+    sensitivitetsparameter (antakelsesregisteret), ikke som kalibrert størrelse.
+    """
+    eb = read_extract("energybalance_11561_road").copy()
+    eb = eb[eb["ContentsCode"] == "EnergibalansenPJ"]
+    eb["aar"] = eb["Tid"].astype(str).str[:4]
+    ebp = eb.pivot_table(index="aar", columns="EnergiProdukt", values="value", aggfunc="sum")
+
+    km = read_extract("km_12577")
+    k = km[(km["ContentsCode"] == "Kjorelengde") & (km["Kjoretoytype"] == "0")]
+    kmp = k.pivot_table(index="Tid", columns="DrivstoffType", values="value", aggfunc="sum")
+
+    rows = []
+    for aar in sorted(set(ebp.index) & set(kmp.index)):
+        if EB_ELECTRICITY_CODE not in ebp.columns or pd.isna(ebp.loc[aar, EB_ELECTRICITY_CODE]):
+            continue
+        gwh = float(ebp.loc[aar, EB_ELECTRICITY_CODE]) * 1e9 / 3.6 / 1e6
+        bev = float(kmp.loc[aar, "18"]) if "18" in kmp.columns else 0.0
+        phev = float(sum(kmp.loc[aar, c] for c in ("14", "16")
+                         if c in kmp.columns and pd.notna(kmp.loc[aar, c])))
+        if not bev or not phev:
+            continue
+        for antatt in bev_intensity_range:
+            rest_gwh = gwh - bev * antatt
+            uf_el = (rest_gwh / antatt) / phev if rest_gwh > 0 else float("nan")
+            rows.append({
+                "kontroll": "utility_factor_identifikasjon", "periode": aar,
+                "eb_elektrisitet_GWh": gwh, "km_rene_elbiler_mill": bev,
+                "km_ladbare_hybrider_mill": phev,
+                "antatt_elbil_kwh_per_km": antatt,
+                "rest_til_hybrider_GWh": rest_gwh,
+                "implisert_elandel_hybrid": uf_el,
+            })
+    df = pd.DataFrame(rows)
+    df["merknad"] = (
+        "En variasjon på ±20 prosent i antatt elbilintensitet spenner implisert elandel "
+        "over hele det mulige intervallet og utenfor. Utility factor er derfor ikke "
+        "identifiserbar fra disse dataene og må hentes eksternt"
+    )
+    return df

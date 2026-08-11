@@ -111,6 +111,23 @@ SPECS: list[TableSpec] = [
         ),
     ),
     TableSpec(
+        table_id="08581",
+        name="age_08581",
+        value_codes={
+            "Alder": ["02", "03", "04", "05", "06", "07"],
+            "ContentsCode": ["Personbiler", "Varebiler"],
+            "Tid": ["*"],
+        },
+        freq="A",
+        expected_units={"Personbiler": "antall", "Varebiler": "antall"},
+        key_dims=("Alder", "ContentsCode"),
+        description=(
+            "Aldersfordelt bestand av person- og varebiler 2008-2025, seks aldersgrupper. "
+            "Bilmerkedimensjonen eliminert. Grunnlag for overlevelseskurver (D-0025); "
+            "har IKKE drivstoffdeling"
+        ),
+    ),
+    TableSpec(
         table_id="07849",
         name="stock_07849",
         value_codes={
