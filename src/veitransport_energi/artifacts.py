@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 import pandas as pd
 
 from . import __version__
+from .assumptions import assumption_register
 from .checks import control_tables
 from .series import build_historical_statistics
 
@@ -49,6 +50,7 @@ def build_all() -> dict:
     os.makedirs(ARTIFACTS, exist_ok=True)
     written: dict[str, pd.DataFrame] = {
         "historical_statistics.csv": build_historical_statistics(),
+        "assumption_register.csv": assumption_register(),
     }
     for navn, df in control_tables().items():
         written[navn] = df

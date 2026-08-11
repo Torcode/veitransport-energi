@@ -14,7 +14,7 @@ from __future__ import annotations
 import pandas as pd
 
 from .datasets import read_extract
-from .diagnostics import energy_reconciliation
+from .diagnostics import energy_reconciliation, utility_factor_identification
 from .linkage import stock_vs_activity
 from .reconstruction import calibrated_intensity, net_retirement
 from .series import DRIVLINJER, GROUPS
@@ -63,4 +63,5 @@ def control_tables() -> dict[str, pd.DataFrame]:
         "control_energy_reconciliation.csv": rec,
         "reconstruction_net_retirement.csv": net_retirement(),
         "reconstruction_intensity_bounds.csv": calibrated_intensity(),
+        "control_utility_factor_identification.csv": utility_factor_identification(),
     }

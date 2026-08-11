@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-11T22:09:38+00:00",
- "git_commit": "7b3988fa9a4e1c7eeca568a618ee842fc70ac84e",
+ "built_utc": "2026-08-11T23:07:19+00:00",
+ "git_commit": "aecd32b67de571371004439abcb93841fbc6e020",
  "code_version": "0.1.0",
  "python": "3.11.15",
  "data_vintage": {
@@ -64,6 +64,10 @@
    "rows": 1418,
    "sha256": "b05c49c54081e38ceb4b15496a782f01aa6401884ef51be2ae59fbc6e5e4f93c"
   },
+  "assumption_register.csv": {
+   "rows": 3,
+   "sha256": "c258113c5fe879424f7819b89c191771ff566220152c54e9825feb33b772b9cb"
+  },
   "control_group_sums.csv": {
    "rows": 42,
    "sha256": "eeb23ae2b3474eb374acf25d629073265ec2fb59f7ec112a1a85a4491abfd280"
@@ -83,6 +87,10 @@
   "reconstruction_intensity_bounds.csv": {
    "rows": 126,
    "sha256": "42aac2806f31ce9c0c4ab2f45422ca56c91c550ddd7bf47f4e18d5c484ec4aac"
+  },
+  "control_utility_factor_identification.csv": {
+   "rows": 40,
+   "sha256": "0a84a06513486c70436600c70fb24eae8aa57e28119574fc32e89bf891dcf27a"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her."
