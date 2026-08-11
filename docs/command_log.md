@@ -33,6 +33,19 @@ Alle SSB-API-kall er i tillegg maskinelt logget med tidsstempel, URL, HTTP-statu
 - **Agent eksterne kilder:** Drivkraft Norges salgsstatistikkside (hentet: SSB oppgitt som kilde; årlig xlsx 1952–; ingen månedsfil; ustabil fil-URL), NOBIL info/API/statistikk-sider (hentet: ingen historikkfunksjon; CC BY 4.0; API-nøkkel), Elhub åpne data (hentet: ingen ladesegment-gruppe), SSB copyright (hentet: NLOD), OFV (hentet: detaljdata betalt).
 - **Agent intensiteter/metode:** NVE-notat om transport og kraftsystemet (hentet: 0,2/0,25/1,2 kWh/km), NVE rapport 22/2019 (hentet: ingen kWh/km-faktorer), TØI Brage-landingsside for stock-flow-artikkelen (hentet: ERTRR 2016, fagfellevurdert), RePEc for Ang 2015 (hentet: Energy Policy 86, 233–238), TØI-rapport 1689/2019-PDF (**403** – må hentes manuelt i fase 1), kandidater: ETRR 2020 om levetider, Figenbaum m.fl. 2018 (WEVJ).
 
+## Fase 1, økt 1 (2026-08-10/11): datalag og brennverdier
+
+| # | Kommando/oppslag | Formål | Utfall |
+|---|---|---|---|
+| 10 | Websøk + henting av SSB-publikasjonsside for dokumentasjonsnotatet | Finne PDF-URL for Notater 2018/45 | Funnet: `_attachment/369610` |
+| 11 | WebFetch av PDF-en | Lese vedlegg A | Tidsavbrudd; byttet til nedlasting |
+| 12 | `curl` av PDF (2,7 MB, 354 sider) + `pdfplumber`-søk og -lesing | Vedlegg A: tabell A1–A4 | Funnet på s. 51–53; verdier ført inn i D-0018, unit_map og energy.py |
+| 13 | `pip install -e ".[dev]"` + `python -m veitransport_energi.build` | Førstegangsbygg av datalaget (16 API-kall, logget i `data/raw/request_log.csv`) | Første kjøring stoppet av kontrakt: 294 tomme celler uten statuskode i energibalanseposten (strukturell glisenhet) → egenskapen kodet eksplisitt i spesifikasjonen; deretter 8/8 OK |
+| 14 | `python -m veitransport_energi.build --offline` + `pytest` + `ruff check` | Verifisere offline-bygg, testsuite og lint | 29 tester grønne uten nettverk; 4 lintfunn rettet |
+| 15 | `git checkout -b feat/data-layer` + commits + bundle | Leveranse for gjennomgåbar PR | Se PR-beskrivelsen |
+
+Merknad: ved fase 1-uttrekket inneholdt energibalanseposten (11561) også 2025-årgangen; designportens tall (til og med 2024) står uendret som daterte resultater, og ny vintage er dokumentert i `data/vintage.json`.
+
 ## Kunnskapsgrenser etter fase 0 (skal lukkes i fase 1–2)
 
 1. Brennverdier/tettheter: Notater 2018/45 vedlegg A er ikke lest (404 på vedleggsforsøket).

@@ -70,7 +70,9 @@ SSBs noter til 11174 og statistikksiden dokumenterer at innsamlede tall for auto
 
 **Avstemmingslag: hele veitransporten.** Salg av autodiesel kan ikke avgrenses til personbiler; tunge kjøretøy og busser bruker samme produkt. Avstemming av modellert energibruk mot salg og energibalanse skjer derfor på veitransportnivå, der de tunge gruppenes kjørelengder (12576/12577) og intensitetsantakelser inngår som eksplisitte, synlige restposter – ikke i estimandet.
 
-**Produkter: bilbensin og autodiesel (petroleumsmåltallet), elektrisitet.** Anleggsdiesel vises kun som kontekstserie. Rent bio som tilleggsserie fra 2022. En vesentlig, tallfestet lekkasje må navngis: energibalansens veitransportpost for bensin svarer til en implisitt brennverdi på bare 22,6–24,6 MJ per liter mot solgt volum (2023–2024), mens autodiesel gir 32,2–32,6. Avviket for bensin er for stort til å skyldes bio-innblanding alene og indikerer at en betydelig del av bensinvolumet allokeres utenfor veitransportposten (fritidsbåter, motorredskaper mv.) eller håndteres annerledes i balansen. Hvor stor ikke-vei-andelen faktisk er, er en navngitt kunnskapsgrense som skal avklares mot energibalansens dokumentasjon i fase 1–2; inntil da avstemmes bensin mot salgsstatistikken, ikke mot energibalanseposten alene.
+**Produkter: bilbensin og autodiesel (petroleumsmåltallet), elektrisitet.** Anleggsdiesel vises kun som kontekstserie. Rent bio som tilleggsserie fra 2022.
+
+> **Korrigert 2026-08-11 (fase 1).** Designporten tolket her de lave implisitte brennverdiene (22,6–24,6 MJ/l for bensin mot solgt volum i 2023–2024) som tegn på at en betydelig del av bensinvolumet ble allokert utenfor veitransportposten. Den tolkningen holder ikke. Den bygde på at faktorene ennå ikke var verifisert, og på at energibalansens biodrivstoffpost ikke var tatt med i regnestykket. Med faktorene fra primærkilden (D-0018) og bioposten inkludert stemmer energibalansens veitransportsum mot salgsenergien til 96–101 prosent i hele 2010–2024 (median 98,3 prosent). Den korrekte konklusjonen er derfor motsatt: de to systemene beskriver samme energimengde, og avstemmingen fungerer som kryssystem-kontroll. Det som fortsatt ikke kan etterprøves, er **fordelingen mellom bensin og autodiesel**, fordi salgsvolumet inneholder iblandet bio mens energibalansens produktposter er eksklusiv bio — og det er ikke dokumentert hvordan bioposten fordeles mellom produktene. Avstemmingen gjøres derfor på summen, ikke per produkt. Beregningen ligger i `src/veitransport_energi/diagnostics.py` med test (D-0019).
 
 ## 5. Anbefalt frekvens per delproblem
 
@@ -114,7 +116,7 @@ Vilkårene fra prosjektbeskrivelsen er kontrollert: kategoriene kan kobles på d
 2. **Bensin/diesel-deling av fossil tilgang.** 14020 deler ikke fossil i bensin og diesel. Etter 2020 er fossilstrømmen liten (4 218 nye fossile personbiler i 2025); historisk (2010–2019) må delingen rekonstrueres (kandidat: SSB 12906 for 2019–, bestandsdifferanser, eller dokumentert bransjekilde). Fram til det: nettoavgang identifiseres presist for el og for fossil samlet, og bare med antatt tilgangsdeling for bensin mot diesel.
 3. **Hybridbestand.** 07849 legger hybrider i «annet drivstoff»; ladbar/ikke-ladbar deling finnes bare i kjørelengdetabellene fra 2016. Implisitt bestand-i-bruk (total km / km per kjøretøy) brukes som konstruert hybridserie, tydelig merket. Kontroll mot 07849: implisitt antall ligger 4,0 prosent (el), 5,8 prosent (bensin) og 15,7 prosent (diesel) over 31.12-bestanden i 2025 – som ventet, siden 12577 omfatter kjøretøy som var registrert i løpet av året; avviksmønsteret dokumenteres og overvåkes.
 4. **El-andel for ladbare hybrider** (utility factor): ren antakelse med kilde (kandidat: Figenbaum m.fl. 2018); scenarioparameter.
-5. **Ikke-vei-andel av bensinsalget** (jf. pkt. 4): navngitt restpost i avstemmingen.
+5. **Fordelingen av biodrivstoff mellom bensin og autodiesel** i energibalansen (jf. korreksjonen i pkt. 4): udokumentert, og gjør produktvis avstemming mot energibalansen umulig. Avstemming skjer på summen. *(Erstattet 2026-08-11 den tidligere posten «ikke-vei-andel av bensinsalget», som bygde på en tolkning tallene ikke støtter.)*
 
 ## 9. Viktigste identifikasjonsproblemer
 
@@ -135,7 +137,7 @@ Vilkårene fra prosjektbeskrivelsen er kontrollert: kategoriene kan kobles på d
 | Skjøtetester | Pkt. 3.1–3.2 som permanente, kjørbare tester | Implementert i fase 0-skript; flyttes inn i testsuiten |
 | Regnskapsidentitet bestand | bestand+tilgang−avgang avstemmes mot 07849 (backcast fra 2015) | Tester avgangsmodellen; det sies eksplisitt at observert tilgang brukes som inngang |
 | Kryssystem-kontroll | Odometerbasert aktivitet × intensitet mot salgsstatistikk (uavhengige målesystemer) | Sterkeste reelle eksterne kontroll som finnes i kildebildet |
-| Energibalanse-avstemming | Modellert el mot post 12.2.1 (2 783 GWh i 2024); bensin mot salget, ikke EB-posten (jf. pkt. 4) | Delvis uavhengig; metodegrense navngitt |
+| Energibalanse-avstemming | Flytende drivstoff: EB-sum (bensin + autodiesel + flytende bio) mot salgsenergi — **etablert i fase 1, holder 96–101 % 2010–2024**. Elektrisitet: modellert el mot post 12.2.1 (2 783 GWh i 2024) | Flytende: fungerer, men bare på sum (produktfordeling ikke etterprøvbar). El: delvis uavhengig, metodegrense navngitt |
 | Konsistens 12577/07849 | Implisitt antall mot 31.12-bestand | Utført i fase 0 (pkt. 8.3); blir løpende kontroll |
 | Reproduksjonskontroll | Sammenligning mot Drivkraft Norges publiserte tall | Samme SSB-grunnlag (verifisert på deres side); omtales aldri som uavhengig validering |
 | Sensitivitet/Monte Carlo | Parametervariasjon innen scenario | Fase 5 |

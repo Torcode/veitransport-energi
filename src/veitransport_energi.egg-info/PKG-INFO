@@ -1,6 +1,20 @@
-# veitransport-energi
+Metadata-Version: 2.4
+Name: veitransport-energi
+Version: 0.1.0
+Summary: Datalag og modeller for energiomstillingen i norsk veitransport
+License: MIT
+Project-URL: Repository, https://github.com/Torcode/veitransport-energi
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=2.0
+Requires-Dist: numpy>=1.24
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: ruff>=0.4; extra == "dev"
+Dynamic: license-file
 
-[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 29 tester uten nettverk, mot committede uttrekk; nettverkskrevende kildekontroller inngår ikke.
+# veitransport-energi
 
 Statistikk- og beslutningsgrunnlag for energiomstillingen i norsk veitransport: hvordan utskiftingen av personbilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet – historisk og i betingede scenarioer fram mot 2035.
 
