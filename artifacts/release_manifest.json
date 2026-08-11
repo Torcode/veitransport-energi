@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-11T23:34:14+00:00",
- "git_commit": "c0ac82cbc3542ef9c0e4773fb6861e5cabbe01fc",
+ "built_utc": "2026-08-11T23:51:03+00:00",
+ "git_commit": "0f8380713507198a360b54455380849b1567ee53",
  "code_version": "0.1.0",
  "python": "3.11.15",
  "data_vintage": {
@@ -104,7 +104,11 @@
   },
   "survival_curve.csv": {
    "rows": 10,
-   "sha256": "e20b418f06038532b945dd3f364137ab933e694bf8ce6efa2db4357270065b47"
+   "sha256": "fe1062018dc5dc142cab51c4f39d36fc1b0d5c8c53ab1e26c4de73dbe30aea7e"
+  },
+  "control_age_definition_break.csv": {
+   "rows": 36,
+   "sha256": "eafbb1a24980696bbed7a70a8a776fbdf48d00c97294a7be70dd3d3b57a02071"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her."

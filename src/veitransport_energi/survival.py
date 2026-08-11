@@ -22,6 +22,18 @@ varebilparken under ett, og kan ikke uten videre brukes per drivlinje — en
 elbilpark og en bensinbilpark med ulik aldersprofil vil ha ulik samlet avgang
 selv med samme aldersspesifikke rater. Det er nettopp den mekanismen en
 kohortmodell fanger, og en konstant rate ikke gjør.
+
+**Brudd i aldersdefinisjonen mellom 2023 og 2024.** Måler man hvor stor del av
+fire årganger førstegangsregistreringer som gjenfinnes i gruppen «under 4 år»,
+ligger forholdet mellom 0,58 og 0,72 fra 2008 til 2023 — og hopper så til 0,92
+i 2024 og 0,94 i 2025. Totalsummen over aldersgruppene stemmer fortsatt med
+bestandstabellen innenfor 1,3 prosent, så det er ikke bestanden som har endret
+seg, men hvordan alder er beregnet. Bruddet er ikke omtalt i tabellens noter.
+
+Kohortsporing over denne grensen sammenligner derfor to ulike definisjoner.
+`survival_curve` utelater som standard alle overganger som krysser bruddet;
+uten den avgrensningen ville de to siste årgangene ha framstått som en reell
+nedgang i overlevelse, når de i virkeligheten måler en definisjonsendring.
 """
 from __future__ import annotations
 
@@ -35,6 +47,11 @@ AGE_CODES = {"02": "Under 4 år", "03": "4 - 7 år", "04": "8 - 11 år",
 GROUP_VARIABLE = {"personbiler": "Personbiler", "varebiler": "Varebiler"}
 STEP_YEARS = 4
 
+# Siste startår hvis overgangen ikke skal krysse definisjonsbruddet: en overgang
+# fra år t leser bestand i t+4, så t må være 2019 for å slutte i 2023.
+LAST_UNBROKEN_START = "2019"
+DEFINITION_BREAK_YEAR = "2024"
+
 
 def age_distribution(gruppe: str) -> pd.DataFrame:
     """Aldersfordelt bestand per år (index: år, kolonner: aldersgruppe)."""
@@ -47,13 +64,53 @@ def age_distribution(gruppe: str) -> pd.DataFrame:
     return p[[c for c in AGE_ORDER if c in p.columns]].sort_index()
 
 
-def cohort_transitions(gruppe: str) -> pd.DataFrame:
-    """Fireårs overgangsrater mellom aldersgrupper, per startår."""
+def definition_break_check(gruppe: str) -> pd.DataFrame:
+    """Andelen av fire årganger førstegangsregistreringer som gjenfinnes i «under 4 år».
+
+    Et stabilt forhold betyr at aldersgruppen fanger den samme delen av
+    registreringene år for år. Et hopp betyr at definisjonen er endret.
+    """
+    from .datasets import read_extract
+
+    p = age_distribution(gruppe)
+    variabel = "Personbiler" if gruppe == "personbiler" else "VareCampBiler"
+    fr = read_extract("firstreg_14020").copy()
+    fr["aar"] = fr["Tid"].astype(str).str[:4]
+    reg = fr[fr["ContentsCode"] == variabel].groupby("aar")["value"].sum()
+    rows = []
+    for aar in p.index:
+        fire = [str(y) for y in range(int(aar) - 3, int(aar) + 1)]
+        if not all(y in reg.index for y in fire):
+            continue
+        sum_reg = sum(reg[y] for y in fire)
+        rows.append({
+            "gruppe": gruppe, "periode": aar,
+            "bestand_under_4_aar": p.loc[aar, "Under 4 år"],
+            "sum_forstegangsreg_4_aar": sum_reg,
+            "dekningsforhold": p.loc[aar, "Under 4 år"] / sum_reg if sum_reg else float("nan"),
+            "etter_brudd": aar >= DEFINITION_BREAK_YEAR,
+        })
+    df = pd.DataFrame(rows)
+    df["merknad"] = (
+        "forholdet hopper mellom 2023 og 2024 uten at tabellens noter omtaler det; "
+        "aldersdefinisjonen er lagt om, og kohortsporing over grensen er ugyldig"
+    )
+    return df
+
+
+def cohort_transitions(gruppe: str, include_break: bool = False) -> pd.DataFrame:
+    """Fireårs overgangsrater mellom aldersgrupper, per startår.
+
+    include_break tar med overganger som krysser definisjonsbruddet. Den finnes
+    bare for å kunne vise hva bruddet gjør; produksjonskode skal ikke sette den.
+    """
     p = age_distribution(gruppe)
     rows = []
     for aar in p.index:
         senere = str(int(aar) + STEP_YEARS)
         if senere not in p.index:
+            continue
+        if not include_break and aar > LAST_UNBROKEN_START:
             continue
         for i in range(len(AGE_ORDER) - 1):
             fra, til = AGE_ORDER[i], AGE_ORDER[i + 1]
@@ -71,9 +128,12 @@ def cohort_transitions(gruppe: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def survival_curve(gruppe: str) -> pd.DataFrame:
-    """Gjennomsnittlig overgangsrate per aldersovergang, med spredning over årene."""
-    t = cohort_transitions(gruppe)
+def survival_curve(gruppe: str, include_break: bool = False) -> pd.DataFrame:
+    """Gjennomsnittlig overgangsrate per aldersovergang, med spredning over årene.
+
+    Utelater som standard overganger som krysser definisjonsbruddet i 2024.
+    """
+    t = cohort_transitions(gruppe, include_break=include_break)
     agg = (t.groupby(["gruppe", "fra_alder", "til_alder"])["overgangsrate"]
            .agg(["mean", "std", "min", "max", "count"]).reset_index())
     agg = agg.rename(columns={"mean": "rate_snitt", "std": "rate_std",
@@ -82,7 +142,8 @@ def survival_curve(gruppe: str) -> pd.DataFrame:
     agg["merknad"] = (
         "fireårs overgangsrate ved kohortsporing; måler netto endring per "
         "aldersgruppe, ikke ren overlevelse — bruktimport løfter den yngste "
-        "overgangen over 1. Ingen drivstoffdeling i kilden"
+        "overgangen over 1. Ingen drivstoffdeling i kilden. Overganger som "
+        f"krysser definisjonsbruddet i {DEFINITION_BREAK_YEAR} er utelatt"
     )
     # bevar aldersrekkefølgen framfor alfabetisk sortering
     agg["_ord"] = agg["fra_alder"].map({a: i for i, a in enumerate(AGE_ORDER)})

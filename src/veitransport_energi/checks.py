@@ -19,7 +19,7 @@ from .linkage import stock_vs_activity
 from .reconstruction import calibrated_intensity, net_retirement
 from .series import DRIVLINJER, GROUPS
 from .stockflow import backcast
-from .survival import survival_curve
+from .survival import definition_break_check, survival_curve
 
 
 def group_sum_check() -> pd.DataFrame:
@@ -74,4 +74,7 @@ def control_tables() -> dict[str, pd.DataFrame]:
         ], ignore_index=True),
         "survival_curve.csv": pd.concat(
             [survival_curve("personbiler"), survival_curve("varebiler")], ignore_index=True),
+        "control_age_definition_break.csv": pd.concat(
+            [definition_break_check("personbiler"), definition_break_check("varebiler")],
+            ignore_index=True),
     }
