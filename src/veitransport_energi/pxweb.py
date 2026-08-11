@@ -33,7 +33,10 @@ def _log_request(log_path: str, url: str, status: int, nbytes: int) -> None:
     new = not os.path.exists(log_path)
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
     with open(log_path, "a", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
+        # csv.writer bruker \r\n som standard (RFC 4180). Repoet krever LF for
+        # CSV (.gitattributes), så uten dette valget ville loggfilen alltid vises
+        # som endret rett etter en utsjekking på Windows.
+        w = csv.writer(f, lineterminator="\n")
         if new:
             w.writerow(["timestamp_utc", "url", "http_status", "bytes"])
         w.writerow([datetime.now(timezone.utc).isoformat(timespec="seconds"), url, status, nbytes])
