@@ -18,6 +18,8 @@ from .diagnostics import energy_reconciliation, utility_factor_identification
 from .linkage import stock_vs_activity
 from .reconstruction import calibrated_intensity, net_retirement
 from .series import DRIVLINJER, GROUPS
+from .stockflow import backcast
+from .survival import survival_curve
 
 
 def group_sum_check() -> pd.DataFrame:
@@ -64,4 +66,12 @@ def control_tables() -> dict[str, pd.DataFrame]:
         "reconstruction_net_retirement.csv": net_retirement(),
         "reconstruction_intensity_bounds.csv": calibrated_intensity(),
         "control_utility_factor_identification.csv": utility_factor_identification(),
+        "validation_backcast.csv": pd.concat([
+            backcast("personbiler", "grov", [str(a) for a in range(2010, 2016)], "2015", "2025"),
+            backcast("varebiler", "grov", [str(a) for a in range(2010, 2016)], "2015", "2025"),
+            backcast("personbiler", "fin", ["2020", "2021", "2022"], "2022", "2025"),
+            backcast("varebiler", "fin", ["2020", "2021", "2022"], "2022", "2025"),
+        ], ignore_index=True),
+        "survival_curve.csv": pd.concat(
+            [survival_curve("personbiler"), survival_curve("varebiler")], ignore_index=True),
     }

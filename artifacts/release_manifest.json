@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-11T23:07:19+00:00",
- "git_commit": "aecd32b67de571371004439abcb93841fbc6e020",
+ "built_utc": "2026-08-11T23:34:14+00:00",
+ "git_commit": "c0ac82cbc3542ef9c0e4773fb6861e5cabbe01fc",
  "code_version": "0.1.0",
  "python": "3.11.15",
  "data_vintage": {
@@ -39,6 +39,12 @@
    "source_updated": "2026-03-06T07:00:00Z",
    "last_period": "2025",
    "sha256_extract": "0fbf899e3229ed366c8568585cf4ce397cf6865b576125668184b0143d25476e"
+  },
+  "age_08581": {
+   "table_id": "08581",
+   "source_updated": "2026-03-06T07:00:00Z",
+   "last_period": "2025",
+   "sha256_extract": "232a29c1fb5107f9c0de5b3ab3bf830abcd0132a82d9e0968e07b8fd65e79b29"
   },
   "stock_07849": {
    "table_id": "07849",
@@ -91,6 +97,14 @@
   "control_utility_factor_identification.csv": {
    "rows": 40,
    "sha256": "0a84a06513486c70436600c70fb24eae8aa57e28119574fc32e89bf891dcf27a"
+  },
+  "validation_backcast.csv": {
+   "rows": 84,
+   "sha256": "6429e97d87baae88bdd9fc681964e03bf9daec8fe63804029c721ce04c40e4eb"
+  },
+  "survival_curve.csv": {
+   "rows": 10,
+   "sha256": "e20b418f06038532b945dd3f364137ab933e694bf8ce6efa2db4357270065b47"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her."
