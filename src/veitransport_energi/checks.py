@@ -16,6 +16,7 @@ import pandas as pd
 from .datasets import read_extract
 from .diagnostics import energy_reconciliation
 from .linkage import stock_vs_activity
+from .reconstruction import calibrated_intensity, net_retirement
 from .series import DRIVLINJER, GROUPS
 
 
@@ -60,4 +61,6 @@ def control_tables() -> dict[str, pd.DataFrame]:
         "control_group_sums.csv": group_sum_check(),
         "control_stock_vs_activity.csv": sva,
         "control_energy_reconciliation.csv": rec,
+        "reconstruction_net_retirement.csv": net_retirement(),
+        "reconstruction_intensity_bounds.csv": calibrated_intensity(),
     }

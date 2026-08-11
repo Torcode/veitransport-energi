@@ -22,8 +22,14 @@ import pandas as pd
 
 from .energy import MJ_PER_LITER
 
-EB_FOSSIL_LABELS = ("Bensin  (ekskl. bio)", "Autodiesel  (ekskl. bio)")
-EB_BIO_LABEL = "Flytende biobrensler"
+# Energibalansen identifiseres på KODE, ikke etikett. Produktdimensjonen er
+# hierarkisk, og flere nivåer bærer samme etikett: «Elektrisitet» finnes både som
+# EP07 og EP070 med identisk verdi, «Alle energiprodukter» som EPTOT00 og EPTOT01,
+# og EP04IF er et aggregat over bensin, autodiesel og LPG. Å velge produkter på
+# etikett og summere ville dobbelttelle. Kodene under er alle bladnivå.
+EB_FOSSIL_CODES = ("EP0465IF", "EP0467112IF")   # bensin og autodiesel, ekskl. bio
+EB_BIO_CODE = "EP052"                            # flytende biobrensler (ikke biogass, EP053)
+EB_ELECTRICITY_CODE = "EP070"                    # elektrisitet, bladnivå
 
 
 def _annual_sales_mill_liter(sales_11174: pd.DataFrame, sales_13585: pd.DataFrame) -> pd.DataFrame:
@@ -76,17 +82,20 @@ def energy_reconciliation(
     # Tid kan være lest som tekst eller tall avhengig av innlesing; normaliser til
     # årstall (int) slik at oppslaget mot salgsårene alltid treffer.
     eb["Tid"] = eb["Tid"].astype(str).str.slice(0, 4).astype(int)
-    ebp = eb.pivot_table(index="Tid", columns="EnergiProdukt_label", values="value")
+    ebp = eb.pivot_table(index="Tid", columns="EnergiProdukt", values="value", aggfunc="sum")
     sales = _annual_sales_mill_liter(sales_11174, sales_13585)
+
+    def _pj(aar: int, kode: str) -> float:
+        if kode not in ebp.columns or pd.isna(ebp.loc[aar, kode]):
+            return 0.0
+        return float(ebp.loc[aar, kode])
 
     rows = []
     for aar, r in sales.iterrows():
         if aar < first_year or aar not in ebp.index:
             continue
-        fossil = sum(float(ebp.loc[aar, c]) for c in EB_FOSSIL_LABELS if c in ebp.columns
-                     and pd.notna(ebp.loc[aar, c]))
-        bio = float(ebp.loc[aar, EB_BIO_LABEL]) if (EB_BIO_LABEL in ebp.columns
-                                                    and pd.notna(ebp.loc[aar, EB_BIO_LABEL])) else 0.0
+        fossil = sum(_pj(aar, kode) for kode in EB_FOSSIL_CODES)
+        bio = _pj(aar, EB_BIO_CODE)
         salg_pj = (r["bensin"] * 1e6 * MJ_PER_LITER["bensin"]
                    + r["autodiesel"] * 1e6 * MJ_PER_LITER["autodiesel_fossil"]) / 1e9
         rows.append({
