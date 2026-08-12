@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-12T01:21:22+00:00",
- "git_commit": "6ba01152ac7b658516ecfa29d9182d52765a5ba8",
+ "built_utc": "2026-08-12T14:16:29+00:00",
+ "git_commit": "183157bde75d6b5725034083af628d037d633e53",
  "arbeidstre": "endret",
  "code_version": "0.1.0",
  "python": "3.11.15",
@@ -118,6 +118,10 @@
   "control_survival_parameter_stability.csv": {
    "rows": 8,
    "sha256": "a1584b968c7b4954483135ec1ba9021a3ab2918e510ff174ab1fcfe7fcbad013"
+  },
+  "control_estimand_coverage.csv": {
+   "rows": 63,
+   "sha256": "5192fed47b2d87ff5f1ecd3931042b051ed23d02ef8cf94ed4116eebc3072578"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her. git_commit er treets tilstand da artefaktene ble bygget; er arbeidstre 'endret', ble de bygget før commit, og den endelige commiten er en etterkommer."

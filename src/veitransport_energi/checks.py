@@ -20,6 +20,10 @@ Validering og identifikasjon
     overlevelseskurven fra aldersdata, definisjonsbruddet i aldersgruppene,
     parameterstabiliteten i overlevelseskurven, og påvisningen av at utility
     factor ikke lar seg identifisere fra prosjektets egne data.
+
+Avgrensning
+    hvor stor del av hver energibærers kjørelengde som ligger innenfor
+    estimandet — grunnlaget for hva fase 5 kan framskrive og hva den ikke kan.
 """
 from __future__ import annotations
 
@@ -28,6 +32,7 @@ import pandas as pd
 from .cohort import FITTED_PARAMS, parameter_stability
 from .cohort import load_flows as cohort_flows
 from .cohort import simulate as cohort_simulate
+from .coverage import estimand_coverage
 from .datasets import read_extract
 from .diagnostics import energy_reconciliation, utility_factor_identification
 from .linkage import stock_vs_activity
@@ -99,4 +104,5 @@ def control_tables() -> dict[str, pd.DataFrame]:
             [definition_break_check("personbiler"), definition_break_check("varebiler")],
             ignore_index=True),
         "control_survival_parameter_stability.csv": parameter_stability("personbiler"),
+        "control_estimand_coverage.csv": estimand_coverage(),
     }
