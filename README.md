@@ -1,10 +1,10 @@
 # veitransport-energi
 
-[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 121 tester uten nettverk, mot committede uttrekk, samt en kontroll av at R-laget leser de samme tallene som Python. Nettverkskrevende kildekontroller inngår ikke og kjøres manuelt.
+[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 131 tester uten nettverk, mot committede uttrekk, samt en kontroll av at R-laget leser de samme tallene som Python. Nettverkskrevende kildekontroller inngår ikke og kjøres manuelt.
 
 Statistikk- og beslutningsgrunnlag for energiomstillingen i norsk veitransport: hvordan utskiftingen av person- og varebilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet — historisk, og i betingede scenarioer fram mot 2035.
 
-**Status: fase 3 av 7 gjennomført** (fase 4 utgår; prognosemodul er avvist med begrunnelse). Datalaget, den historiske statistikken og modellkjernen med validering ligger her. Scenarioer, beslutningsflate og rådgivernotat gjenstår. Sist oppdatert etter beslutning D-0031.
+**Status: fase 3 av 7 gjennomført** (fase 4 utgår; prognosemodul er avvist med begrunnelse). Datalaget, den historiske statistikken og modellkjernen med validering ligger her. Scenarioer, beslutningsflate og rådgivernotat gjenstår. Sist oppdatert etter beslutning D-0032.
 
 ## Hva vi vet
 
@@ -57,11 +57,12 @@ To åpne kildepunkter følger med: aldersfordelt bruktimport fra Statens vegvese
 | [src/veitransport_energi/](src/veitransport_energi/) | Uttrekk, datakontrakter, serier, modeller og artefaktbygging |
 | [R/](R/) | Uavhengig lesing av artefaktene, designsystem og figurer |
 | [notat/](notat/) | Quarto-notater bygget utelukkende fra publiserte artefakter |
-| [tests/](tests/) | 121 tester, alle demonstrert å kunne feile før de ble beholdt |
+| [tests/](tests/) | 131 tester, alle demonstrert å kunne feile før de ble beholdt |
 | [docs/00_project_charter.md](docs/00_project_charter.md) | Beslutningsproblem, hovedestimand, brukere, avgrensninger |
 | [docs/01_design_gate.md](docs/01_design_gate.md) | Datamatrise, sammenlignbarhetsanalyse, identifikasjonsproblemer |
 | [docs/02_method_decision.md](docs/02_method_decision.md) | Metodebeslutningsmatrise, inkludert begrunnet nei til prognosemodul |
 | [docs/03_product_and_design.md](docs/03_product_and_design.md) | Brukerreise, informasjonsarkitektur, designsystem |
+| [docs/04_scenario_design.md](docs/04_scenario_design.md) | Hva scenarioene betinger på, og hva estimandet dekker |
 | [docs/decision_log.md](docs/decision_log.md) | Daterte beslutninger med alternativer, begrunnelse og opphav |
 | [docs/data_policy.md](docs/data_policy.md) | Rådatapolitikk, kodebok, kanonisk innlesing |
 | [data/metadata/source_register.csv](data/metadata/source_register.csv) | 29 kilder med definisjoner, lisens og kontrollstatus |
@@ -77,7 +78,7 @@ Skillet er ikke smakssak. Ingen størrelse som ender i en figur eller en tekst, 
 ```
 pip install -e ".[dev]"                      # Python-laget
 python -m veitransport_energi.artifacts      # bygger alle artefakter og manifestet
-pytest                                       # 121 tester, uten nettverk
+pytest                                       # 131 tester, uten nettverk
 Rscript R/kontroll_artefakter.R              # uavhengig kontroll av leveransen
 Rscript R/bygg_figurer.R                     # figurene i figurer/
 ```
