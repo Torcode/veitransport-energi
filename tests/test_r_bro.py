@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 
@@ -96,6 +97,32 @@ def test_r_leser_norske_tegn_som_tegn_ikke_som_byte(r_resultat):
     assert r_resultat["tegnkontroll_lengde"] == len(ventet), (
         f"R teller {r_resultat['tegnkontroll_lengde']} tegn, Python {len(ventet)} — "
         "R kjører i feil locale, og norske tegn blir ødelagt i figurene"
+    )
+
+
+def test_ci_installerer_hver_pakke_r_laget_krever():
+    """Feilen som faktisk oppsto, fanget der den oppstår.
+
+    Første CI-kjøring feilet fordi `knitr` var installert i utviklingsmiljøet,
+    men manglet i workflow-filen. Symptomet kom langt fra årsaken: et notat som
+    ikke lot seg bygge. Kravet er nå deklarert i R/kravpakker.R, og denne testen
+    krever at workflow-filen installerer hvert navn i listen. Den trenger ikke R
+    for å kjøre — den sammenligner to filer, og fanger derfor drift lokalt.
+    """
+    with open(os.path.join(ROOT, "R", "kravpakker.R"), encoding="utf-8") as f:
+        kilde = f.read()
+    blokk = re.search(r"KREVDE_PAKKER <- c\((.*?)\n\)", kilde, re.DOTALL)
+    assert blokk, "fant ikke KREVDE_PAKKER i R/kravpakker.R"
+    pakker = re.findall(r'"([A-Za-z0-9.]+)"', blokk.group(1))
+    assert len(pakker) >= 5, f"mistenkelig kort pakkeliste: {pakker}"
+
+    with open(os.path.join(ROOT, ".github", "workflows", "pr-checks.yml"),
+              encoding="utf-8") as f:
+        workflow = f.read()
+    mangler = [p for p in pakker if f"r-cran-{p.lower()}" not in workflow]
+    assert not mangler, (
+        f"CI installerer ikke: {', '.join('r-cran-' + p.lower() for p in mangler)} — "
+        "legg dem inn i .github/workflows/pr-checks.yml"
     )
 
 

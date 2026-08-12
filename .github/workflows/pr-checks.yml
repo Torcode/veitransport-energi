@@ -26,12 +26,16 @@ jobs:
           python-version: "3.11"
       - name: Installer pakken med utviklingsavhengigheter
         run: pip install -e ".[dev]"
-      - name: Installer R og pakkene figurlaget bruker
+      # Listen skal være identisk med KREVDE_PAKKER i R/kravpakker.R; en test
+      # sammenligner de to, slik at et manglende navn her gir rødt før pushen
+      # framfor å dukke opp som et notat som ikke lot seg bygge.
+      - name: Installer R og pakkene R-laget krever
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            r-base-core r-cran-ggplot2 r-cran-readr r-cran-dplyr r-cran-tidyr \
-            r-cran-scales r-cran-jsonlite r-cran-digest r-cran-tibble r-cran-ragg
+            r-base-core r-cran-readr r-cran-dplyr r-cran-tidyr r-cran-tibble \
+            r-cran-ggplot2 r-cran-scales r-cran-ragg r-cran-jsonlite \
+            r-cran-digest r-cran-knitr
       - name: Lint (ruff)
         run: ruff check .
       - name: Tester (pytest, uten nettverk, mot committede uttrekk)
