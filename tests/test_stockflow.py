@@ -91,3 +91,46 @@ def test_ratene_faller_med_alderen_etter_den_yngste():
     kurve = survival_curve("personbiler")
     etter = kurve[kurve["fra_alder"] != "Under 4 år"]["rate_snitt"].tolist()
     assert etter == sorted(etter, reverse=True), f"forventet fallende overlevelse: {etter}"
+
+
+def test_aldersdefinisjonen_har_et_brudd_mellom_2023_og_2024():
+    """Funn som korrigerer D-0025: kohortsporing over grensen er ugyldig.
+
+    Andelen av fire årganger førstegangsregistreringer som gjenfinnes i «under
+    4 år», er stabil fra 2008 til 2023 og hopper så. Bruddet er ikke omtalt i
+    tabellens noter.
+    """
+    from veitransport_energi.survival import definition_break_check
+
+    d = definition_break_check("personbiler")
+    for_brudd = d[~d["etter_brudd"]]["dekningsforhold"]
+    etter = d[d["etter_brudd"]]["dekningsforhold"]
+    assert for_brudd.max() < 0.80, "forholdet før bruddet skal ligge klart under 0,8"
+    assert etter.min() > 0.85, "forholdet etter bruddet skal ligge klart over 0,85"
+    assert etter.min() - for_brudd.max() > 0.10, "hoppet skal være entydig"
+
+
+def test_bruddoverganger_utelates_og_gir_renere_kurve():
+    """Uten avgrensningen framstår definisjonsendringen som fallende overlevelse."""
+    from veitransport_energi.survival import survival_curve as sc
+
+    ren = sc("personbiler").set_index("fra_alder")
+    med = sc("personbiler", include_break=True).set_index("fra_alder")
+    assert ren["antall_aar"].max() < med["antall_aar"].max(), "avgrensningen skal fjerne år"
+    for alder in ("4 - 7 år", "8 - 11 år"):
+        assert ren.loc[alder, "rate_std"] < med.loc[alder, "rate_std"], (
+            f"spredningen for {alder} skal falle når bruddoverganger utelates"
+        )
+
+
+def test_totalsummen_i_aldersdataene_er_uendret_over_bruddet():
+    """Det er aldersfordelingen som er lagt om, ikke bestanden — viktig for tolkningen."""
+    from veitransport_energi.datasets import read_extract
+    from veitransport_energi.survival import age_distribution
+
+    p = age_distribution("personbiler")
+    st = read_extract("stock_07849")
+    tot = st[st["ContentsCode"] == "Personbil1"].groupby("Tid")["value"].sum()
+    for aar in ("2023", "2024", "2025"):
+        avvik = abs(p.loc[aar].sum() / tot[aar] - 1)
+        assert avvik < 0.02, f"totalsummen avviker {avvik:.1%} i {aar}"
