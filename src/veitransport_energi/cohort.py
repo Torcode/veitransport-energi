@@ -151,23 +151,30 @@ def _sse(flows: dict, params: SurvivalParams, drivlinje: str,
 
 
 def fit_survival(gruppe: str, drivlinje: str, start_year: str, fit_years: list[str],
-                 import_age: int = 3) -> tuple[SurvivalParams, float]:
+                 import_age: int = 3,
+                 flows: dict[str, pd.DataFrame] | None = None
+                 ) -> tuple[SurvivalParams, float]:
     """Estimer Weibull-parametrene mot observert bestand i `fit_years`.
 
     Rutenettsøk med etterfølgende forfining. Enkelt og gjennomsiktig framfor en
-    optimeringsrutine som skjuler hvor følsom løsningen er.
+    optimeringsrutine som skjuler hvor følsom løsningen er. Resultatet rundes til
+    søkets egen oppløsning (0,1), slik at utdataene ikke gir inntrykk av en
+    presisjon rutenettet ikke har.
     """
-    flows = load_flows(gruppe)
+    if flows is None:
+        flows = load_flows(gruppe)
     beste, beste_sse = None, float("inf")
     for scale in np.arange(8.0, 30.1, 1.0):
         for shape in np.arange(1.5, 8.1, 0.5):
-            p = SurvivalParams(scale=float(scale), shape=float(shape), import_age=import_age)
+            p = SurvivalParams(scale=round(float(scale), 1), shape=round(float(shape), 1),
+                               import_age=import_age)
             v = _sse(flows, p, drivlinje, start_year, fit_years)
             if v < beste_sse:
                 beste, beste_sse = p, v
     for scale in np.arange(max(1.0, beste.scale - 1.0), beste.scale + 1.05, 0.1):
         for shape in np.arange(max(0.5, beste.shape - 0.5), beste.shape + 0.55, 0.1):
-            p = SurvivalParams(scale=float(scale), shape=float(shape), import_age=import_age)
+            p = SurvivalParams(scale=round(float(scale), 1), shape=round(float(shape), 1),
+                               import_age=import_age)
             v = _sse(flows, p, drivlinje, start_year, fit_years)
             if v < beste_sse:
                 beste, beste_sse = p, v
@@ -204,3 +211,62 @@ FITTED_PARAMS: dict[str, SurvivalParams] = {
     "ikke_elektrisk": SurvivalParams(scale=20.2, shape=2.4),
     "elektrisitet": SurvivalParams(scale=11.8, shape=4.4),
 }
+
+# Rullerende estimeringsvinduer for robusthetsprøven. Sju år hver, forskjøvet tre
+# om gangen, slik at det første er valideringens eget og det siste dekker de
+# årene valideringen måler mot.
+STABILITY_WINDOWS: dict[str, list[str]] = {
+    "2009-2015": [str(a) for a in range(2009, 2016)],
+    "2012-2018": [str(a) for a in range(2012, 2019)],
+    "2016-2022": [str(a) for a in range(2016, 2023)],
+    "2019-2025": [str(a) for a in range(2019, 2026)],
+}
+
+
+def _profile_span(flows: dict, drivlinje: str, start_year: str, fit_years: list[str],
+                  beste: SurvivalParams, sse_min: float, faktor: float = 2.0
+                  ) -> tuple[float, float]:
+    """Skalaverdier der SSE holder seg under `faktor` ganger minimum, form fast.
+
+    Dette er en profil over tilpasningen i estimeringsårene, ikke et
+    konfidensintervall: residualene er sterkt seriekorrelerte, og profilen sier
+    bare hvor skarpt nivået er pinnet av bestandsnivåene i vinduet.
+    """
+    treff = [round(float(s), 1) for s in np.arange(4.0, 40.01, 0.1)
+             if _sse(flows, SurvivalParams(round(float(s), 1), beste.shape, beste.import_age),
+                     drivlinje, start_year, fit_years) <= faktor * sse_min]
+    return (min(treff), max(treff)) if treff else (float("nan"), float("nan"))
+
+
+def parameter_stability(gruppe: str = "personbiler", start_year: str = "2008",
+                        windows: dict[str, list[str]] | None = None) -> pd.DataFrame:
+    """Reestimer parametrene på rullerende vinduer og mål hvor mye de flytter seg.
+
+    Spredningen over vinduene er prosjektets usikkerhetsspenn for
+    overlevelsesparametrene. SSE-profilen innenfor ett vindu er langt smalere, og
+    tabellen viser begge nettopp for at den smale ikke skal forveksles med
+    usikkerhet.
+    """
+    flows = load_flows(gruppe)
+    rows = []
+    for drivlinje in DRIVELINES:
+        for navn, aar in (windows or STABILITY_WINDOWS).items():
+            p, sse = fit_survival(gruppe, drivlinje, start_year, aar, flows=flows)
+            lav, hoy = _profile_span(flows, drivlinje, start_year, aar, p, sse)
+            rows.append({
+                "kontroll": "parameterstabilitet_overlevelse", "gruppe": gruppe,
+                "drivlinje": drivlinje, "estimeringsvindu": navn,
+                "weibull_scale": p.scale, "weibull_shape": p.shape,
+                "import_age": p.import_age, "sse": sse,
+                "profil_skala_lav": lav, "profil_skala_hoy": hoy,
+            })
+    df = pd.DataFrame(rows)
+    spenn = df.groupby("drivlinje").agg(
+        skala_min=("weibull_scale", "min"), skala_maks=("weibull_scale", "max"),
+        form_min=("weibull_shape", "min"), form_maks=("weibull_shape", "max"))
+    df = df.merge(spenn, on="drivlinje", how="left")
+    df["merknad"] = (
+        "spennet over vinduene er registerets usikkerhetsspenn; SSE-profilen "
+        "innenfor ett vindu er langt smalere og skal ikke leses som usikkerhet"
+    )
+    return df

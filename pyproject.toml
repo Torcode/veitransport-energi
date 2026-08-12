@@ -29,6 +29,11 @@ where = ["src"]
 [tool.ruff]
 line-length = 110
 target-version = "py311"
+# Fase 0-skriptene under analysis/ er frosset dokumentasjon av hva som faktisk ble
+# kjørt i designporten, ikke bibliotekkode som vedlikeholdes. De holdes utenfor lint
+# framfor å bli formatert om i ettertid — da ville sporet vært endret. Unntaket står
+# her og ikke i CI-kommandoen, slik at `ruff check .` lokalt og i CI gir samme svar.
+exclude = ["analysis"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B"]

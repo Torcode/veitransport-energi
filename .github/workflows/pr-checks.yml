@@ -21,6 +21,6 @@ jobs:
       - name: Installer pakken med utviklingsavhengigheter
         run: pip install -e ".[dev]"
       - name: Lint (ruff)
-        run: ruff check src tests
+        run: ruff check .
       - name: Tester (pytest, uten nettverk, mot committede uttrekk)
         run: pytest

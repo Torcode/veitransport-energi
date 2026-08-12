@@ -37,13 +37,29 @@ def _sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def _git_commit() -> str:
+def _git(*args: str) -> str | None:
     try:
-        out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
-                             capture_output=True, text=True, timeout=10)
-        return out.stdout.strip() if out.returncode == 0 else "ukjent"
+        out = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, timeout=10)
+        return out.stdout if out.returncode == 0 else None
     except OSError:
-        return "ukjent"
+        return None
+
+
+def _git_state() -> dict[str, str]:
+    """Commit artefaktene ble bygget fra, og om treet var endret da.
+
+    Artefaktene bygges normalt før commit, så `git_commit` peker på forelderen til
+    den commiten som til slutt inneholder dem. Uten `arbeidstre` ville det tallet
+    sett ut som en eksakt binding det ikke er.
+    """
+    commit = _git("rev-parse", "HEAD")
+    status = _git("status", "--porcelain")
+    if commit is None:
+        return {"git_commit": "ukjent", "arbeidstre": "ukjent"}
+    return {
+        "git_commit": commit.strip(),
+        "arbeidstre": "rent" if status is not None and not status.strip() else "endret",
+    }
 
 
 def build_all() -> dict:
@@ -63,7 +79,7 @@ def build_all() -> dict:
 
     manifest = {
         "built_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "git_commit": _git_commit(),
+        **_git_state(),
         "code_version": __version__,
         "python": sys.version.split()[0],
         "data_vintage": {
@@ -78,7 +94,9 @@ def build_all() -> dict:
         },
         "merknad": (
             "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. "
-            "Framskrivinger og scenarioer hører til fase 5 og finnes ikke her."
+            "Framskrivinger og scenarioer hører til fase 5 og finnes ikke her. "
+            "git_commit er treets tilstand da artefaktene ble bygget; er arbeidstre "
+            "'endret', ble de bygget før commit, og den endelige commiten er en etterkommer."
         ),
     }
     with open(os.path.join(ARTIFACTS, "release_manifest.json"), "w", encoding="utf-8") as f:

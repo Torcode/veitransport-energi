@@ -101,6 +101,40 @@ def test_elbilenes_kurvehale_er_ikke_belagt_med_data(flows):
     )
 
 
+def test_de_laste_parametrene_reproduseres_av_soket(flows):
+    """Konstantene i FITTED_PARAMS skal komme fra estimeringen, ikke fra hånden."""
+    from veitransport_energi.cohort import FITTED_PARAMS, fit_survival
+
+    fit_aar = [str(a) for a in range(2009, 2016)]
+    for drivlinje, ventet in FITTED_PARAMS.items():
+        funnet, _ = fit_survival("personbiler", drivlinje, "2008", fit_aar, flows=flows)
+        assert funnet.scale == ventet.scale, f"{drivlinje}: skala {funnet.scale} mot {ventet.scale}"
+        assert funnet.shape == ventet.shape, f"{drivlinje}: form {funnet.shape} mot {ventet.shape}"
+
+
+def test_formparameteren_flytter_seg_mer_enn_skalaen_over_vinduer():
+    """Hva bestandsdata faktisk identifiserer — og hva de ikke gjør.
+
+    Nivået på levetiden er pinnet av bestandsnivåene; hvor brått avgangen
+    inntreffer, er det ikke. Skillet bærer usikkerhetsanalysen i fase 5, og
+    testen låser at det ikke forsvinner stille.
+    """
+    from veitransport_energi.cohort import parameter_stability
+
+    d = parameter_stability("personbiler", windows={
+        "2009-2015": [str(a) for a in range(2009, 2016)],
+        "2019-2025": [str(a) for a in range(2019, 2026)],
+    })
+    for drivlinje in ("elektrisitet", "ikke_elektrisk"):
+        rad = d[d["drivlinje"] == drivlinje]
+        skala_rel = (rad["weibull_scale"].max() / rad["weibull_scale"].min()) - 1
+        form_rel = (rad["weibull_shape"].max() / rad["weibull_shape"].min()) - 1
+        assert form_rel > skala_rel, (
+            f"{drivlinje}: form {form_rel:.1%} skal flytte seg mer enn skala {skala_rel:.1%}"
+        )
+        assert skala_rel < 0.15, f"{drivlinje}: skalaen skal være rimelig stabil"
+
+
 def test_framskrivingen_er_sterkt_folsom_for_overlevelsesparametrene(flows):
     """Følsomheten som må bæres videre til usikkerhetsanalysen i fase 5."""
     ages = np.arange(MAX_AGE + 1)
