@@ -16,3 +16,7 @@ analysis_design_gate_fase0.zip
 # RStudio (prosjektmappen lokalt kan inneholde dette)
 .Rproj.user/
 *.Rproj
+
+# R-kontrollens utdata er en kjoerelogg, ikke et artefakt: den hoerer hjemme i
+# testkjoeringen, ikke i repoet. Artefaktene selv ligger i artifacts/.
+R/kontrollresultat.json
