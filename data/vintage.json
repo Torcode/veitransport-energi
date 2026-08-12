@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-11T23:34:03+00:00",
- "git_commit": "c0ac82cbc3542ef9c0e4773fb6861e5cabbe01fc",
+ "built_utc": "2026-08-12T18:11:45+00:00",
+ "git_commit": "bbb16df73ea1b1d6206f4b61690682131434b106",
  "python": "3.11.15",
  "tables": {
   "sales_03687": {
@@ -92,6 +92,15 @@
    "rows": 2448,
    "sha256_raw": "ea312a21d969280b575c1db49541f3dc53df36111206312342e65f1f5eb1f68a",
    "sha256_extract": "869de425aeef51000060072a1d2d673f7ea8cfac8bd20f8dbd0f3e45b81a1ebf"
+  },
+  "emissions_13931_road": {
+   "table_id": "13931",
+   "source_updated": "2026-06-04T06:00:00Z",
+   "first_period": "1990",
+   "last_period": "2025",
+   "rows": 540,
+   "sha256_raw": "9a2de4db17dc87c229a74869b6b58a1d7dd2731e88fdd35ff74d9f004649de8a",
+   "sha256_extract": "7256d59ccc3343c49229e0b7b75831a1034f189b538d2a22da645c2bb3a54929"
   }
  }
 }

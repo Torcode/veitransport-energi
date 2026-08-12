@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-12T14:16:29+00:00",
- "git_commit": "183157bde75d6b5725034083af628d037d633e53",
+ "built_utc": "2026-08-12T18:20:09+00:00",
+ "git_commit": "e984d7b5f1c39aad50c8dc7286f1155d1e37d2de",
  "arbeidstre": "endret",
  "code_version": "0.1.0",
  "python": "3.11.15",
@@ -64,6 +64,12 @@
    "source_updated": "2026-06-12T06:00:00Z",
    "last_period": "2025",
    "sha256_extract": "869de425aeef51000060072a1d2d673f7ea8cfac8bd20f8dbd0f3e45b81a1ebf"
+  },
+  "emissions_13931_road": {
+   "table_id": "13931",
+   "source_updated": "2026-06-04T06:00:00Z",
+   "last_period": "2025",
+   "sha256_extract": "7256d59ccc3343c49229e0b7b75831a1034f189b538d2a22da645c2bb3a54929"
   }
  },
  "artifacts": {
@@ -122,6 +128,14 @@
   "control_estimand_coverage.csv": {
    "rows": 63,
    "sha256": "5192fed47b2d87ff5f1ecd3931042b051ed23d02ef8cf94ed4116eebc3072578"
+  },
+  "control_fuel_volume_shares.csv": {
+   "rows": 70,
+   "sha256": "6f0f0fbb5ca4b32177bd801acd1eda6090d6b24f01830af15334ea14bf8bac61"
+  },
+  "control_volume_vs_distance.csv": {
+   "rows": 40,
+   "sha256": "e92d2d0197bf0a071e1a1147f40a64381dcaff7f384b885676a9faabcf510e3e"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her. git_commit er treets tilstand da artefaktene ble bygget; er arbeidstre 'endret', ble de bygget før commit, og den endelige commiten er en etterkommer."

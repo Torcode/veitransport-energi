@@ -164,3 +164,17 @@ table_id,extract,dimension,dimension_label,code,code_label,unit,role,note
 11561,energybalance_11561_road,ContentsCode,statistikkvariabel,EnergibalansenGWh,Energibalansen (GWh),GWh,statistikkvariabel,
 11561,energybalance_11561_road,ContentsCode,statistikkvariabel,EnergibalansenPJ,Energibalansen (PJ),PJ,statistikkvariabel,
 11561,energybalance_11561_road,Tid,år,1990--2025,36 perioder (år),,tid,
+13931,emissions_13931_road,(tabell),"13931: Klimagasser, etter utslippskilde, energiprodukt og komponent, GWP-verdier etter Parisavtalen (AR5) 1990-2024",note1,,,tabellnote,På grunn av avrunding vil totaler kunne avvike fra summen av undergrupper.
+13931,emissions_13931_road,(tabell),"13931: Klimagasser, etter utslippskilde, energiprodukt og komponent, GWP-verdier etter Parisavtalen (AR5) 1990-2024",note2,,,tabellnote,Utslipp fra utenriks sjøfart og luftfart er ikke inkludert. Innenriks luftfart inkluderer næringen lufttransport og Forsvarets flyvninger.
+13931,emissions_13931_road,(tabell),"13931: Klimagasser, etter utslippskilde, energiprodukt og komponent, GWP-verdier etter Parisavtalen (AR5) 1990-2024",note3,,,tabellnote,"Tabellen oppgir CO2 ekvivalenter (GWP-verdier) etter AR5 , IPCCs Fifth Assessment Report som er verdiene som benyttes i Paris-avtalen."
+13931,emissions_13931_road,UtslpTilLuft,kilde (aktivitet),5,Veitrafikk,,klassifisering,
+13931,emissions_13931_road,UtslpTilLuft,kilde (aktivitet),5.1,Personbiler,,klassifisering,
+13931,emissions_13931_road,UtslpTilLuft,kilde (aktivitet),5.2,Andre lette kjøretøy,,klassifisering,
+13931,emissions_13931_road,UtslpTilLuft,kilde (aktivitet),5.3,Tunge kjøretøy,,klassifisering,
+13931,emissions_13931_road,UtslpTilLuft,kilde (aktivitet),5.4,Motorsykler og mopeder,,klassifisering,
+13931,emissions_13931_road,UtslpEnergivare,energiprodukt,VT0,I alt,,klassifisering,
+13931,emissions_13931_road,UtslpEnergivare,energiprodukt,VT4,"Bensin, parafin",,klassifisering,
+13931,emissions_13931_road,UtslpEnergivare,energiprodukt,VT5,"Diesel-, gass- og lett fyringsolje, spesialdestillat",,klassifisering,
+13931,emissions_13931_road,UtslpKomp,komponent,K11,Karbondioksid (CO2),,klassifisering,
+13931,emissions_13931_road,ContentsCode,statistikkvariabel,Utslipp,"Utslipp til luft (CO2 i 1 000 tonn, CH4 og N2O i tonn, HFK, PFK og SF6 i kg)","1 000 tonn, tonn eller kg",statistikkvariabel,
+13931,emissions_13931_road,Tid,år,1990--2025,36 perioder (år),,tid,

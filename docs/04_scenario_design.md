@@ -59,8 +59,37 @@ For **autodiesel** går det ikke. Bare 86 prosent av dieselkilometerne ligger
 innenfor estimandet, og andelen faller. Verre: tallet er *kilometer*, ikke
 volum. Et vogntog bruker flere ganger så mye diesel per kilometer som en
 personbil, så andelen av dieselvolumet innenfor estimandet er lavere enn 86
-prosent — hvor mye lavere, kan ikke avgjøres fra prosjektets kilder, som ikke
-oppgir volum per kjøretøytype.
+prosent.
+
+> **Korreksjon 2026-08-12 (D-0033).** Setningen over fortsatte opprinnelig med at
+> «hvor mye lavere, kan ikke avgjøres fra prosjektets kilder». Det var for raskt.
+> Utslippsregnskapet (SSB-tabell 13931) fører CO2 fra veitrafikk delt på
+> kjøretøygruppe og energivare, og siden CO2 per liter er en egenskap ved
+> drivstoffet og ikke ved kjøretøyet, *er* forholdstallene mellom gruppene
+> volumandeler. Fordelingen er dermed observerbar uten at noen utslippsfaktor må
+> antas. Tallene står i `control_fuel_volume_shares.csv` og
+> `control_volume_vs_distance.csv`, og avsnittet under erstatter det som ble
+> strøket.
+
+
+### Volumandelene, målt
+
+| Energibærer (2024) | Andel av kilometer innenfor estimandet | Andel av volum innenfor estimandet | Differanse |
+|---|---|---|---|
+| Bensin | 99,8 % | 91,8 % | 8,0 pp |
+| Autodiesel | 86,3 % | 55,1 % | 31,2 pp |
+
+Bensinens differanse er motorsykler og mopeder, som står for 8,0 prosent av
+bensinvolumet og ikke inngår i estimandet. Dieselens differanse er tunge
+kjøretøy: de kjører 13,7 prosent av dieselkilometerne, men bruker 44,9 prosent av
+dieselen. Personbilene alene kjører 56,3 prosent av dieselkilometerne og bruker
+33,0 prosent av volumet.
+
+Konsekvensen for leveransen er skarpere enn før, ikke svakere. Prosjektet kan nå
+tallfeste hvor stor del av hver energibærer det dekker, framfor å måtte si at
+grensen ikke lar seg fastsette. Men konklusjonen står: person- og varebiler er
+drøyt halvparten av autodieselvolumet, så en framskriving for disse gruppene er
+ikke en framskriving av autodieselsalget.
 
 **Konsekvens:** fase 5 framskriver person- og varebilers dieselforbruk, aldri
 totalt autodieselsalg. Resultatfiler og figurer skal si det i navnet, ikke i en

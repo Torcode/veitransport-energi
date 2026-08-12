@@ -1,10 +1,10 @@
 # veitransport-energi
 
-[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 131 tester uten nettverk, mot committede uttrekk, samt en kontroll av at R-laget leser de samme tallene som Python. Nettverkskrevende kildekontroller inngår ikke og kjøres manuelt.
+[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 141 tester uten nettverk, mot committede uttrekk, samt en kontroll av at R-laget leser de samme tallene som Python. Nettverkskrevende kildekontroller inngår ikke og kjøres manuelt.
 
 Statistikk- og beslutningsgrunnlag for energiomstillingen i norsk veitransport: hvordan utskiftingen av person- og varebilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet — historisk, og i betingede scenarioer fram mot 2035.
 
-**Status: fase 3 av 7 gjennomført** (fase 4 utgår; prognosemodul er avvist med begrunnelse). Datalaget, den historiske statistikken og modellkjernen med validering ligger her. Scenarioer, beslutningsflate og rådgivernotat gjenstår. Sist oppdatert etter beslutning D-0032.
+**Status: fase 3 av 7 gjennomført** (fase 4 utgår; prognosemodul er avvist med begrunnelse). Datalaget, den historiske statistikken og modellkjernen med validering ligger her. Scenarioer, beslutningsflate og rådgivernotat gjenstår. Sist oppdatert etter beslutning D-0033.
 
 ## Hva vi vet
 
@@ -23,6 +23,8 @@ I 2025 er 32,2 prosent av personbilbestanden elektrisk, men elbilene står for 3
 **To uavhengige målesystemer stemmer på totalen.** Salgsstatistikkens energiinnhold og energibalansens veitransportpost ligger innenfor 0,96–1,01 av hverandre for 2010–2024, med 0,98 som typisk forhold. Avstemmingen holder på summen, men ikke per produkt — og den grensen står navngitt framfor å bli skjult.
 
 **Modellen treffer på ti års horisont, men bare der data rekker.** En kohortmodell som bygger aldersfordelingen fra tilgangshistorikken og estimerer overlevelse mot observert bestand, bommer med høyst 2,03 prosent over ti år som ikke inngikk i estimeringen. Den enklere modellen med konstant avgangsrate bommet med 6,8 og 7,3 prosent. Reestimering på rullerende vinduer viser hva bestandsdata faktisk identifiserer: levetidsnivået er godt bestemt (4–10 prosents spredning), mens formen på avgangskurven ikke er det (40–45 prosent). Bare sju prosent av elbilbestanden i 2025 er over åtte år, så kurvens hale er ekstrapolasjon.
+
+**Personbilene kjører over halvparten av dieselkilometerne, men bruker en tredel av dieselen.** Utslippsregnskapet fører CO2 fra veitrafikk delt på kjøretøygruppe, og siden CO2 per liter er en egenskap ved drivstoffet og ikke ved kjøretøyet, er forholdstallene mellom gruppene volumandeler — uten at noen utslippsfaktor må antas. I 2024 sto personbilene for 56,3 prosent av dieselkilometerne og 33,0 prosent av volumet, mens tunge kjøretøy kjørte 13,7 prosent av kilometerne og brukte 44,9 prosent av dieselen. Det avgjør hva en framskriving for person- og varebiler kan påstå om autodieselsalget: den dekker 55,1 prosent av volumet, ikke 86 prosent som kilometerandelen alene skulle tilsi.
 
 **Én sentral parameter lar seg ikke identifisere fra prosjektets data.** Utility factor for ladbare hybrider — andelen kjørelengde på forbrenningsmotor — gir implisert elandel fra under 0 til over 1 når elbilintensiteten varieres innenfor sitt eget usikkerhetsspenn. Den må komme utenfra og behandles som sensitivitetsparameter, aldri som kalibrert størrelse.
 
@@ -57,7 +59,7 @@ To åpne kildepunkter følger med: aldersfordelt bruktimport fra Statens vegvese
 | [src/veitransport_energi/](src/veitransport_energi/) | Uttrekk, datakontrakter, serier, modeller og artefaktbygging |
 | [R/](R/) | Uavhengig lesing av artefaktene, designsystem og figurer |
 | [notat/](notat/) | Quarto-notater bygget utelukkende fra publiserte artefakter |
-| [tests/](tests/) | 131 tester, alle demonstrert å kunne feile før de ble beholdt |
+| [tests/](tests/) | 141 tester, alle demonstrert å kunne feile før de ble beholdt |
 | [docs/00_project_charter.md](docs/00_project_charter.md) | Beslutningsproblem, hovedestimand, brukere, avgrensninger |
 | [docs/01_design_gate.md](docs/01_design_gate.md) | Datamatrise, sammenlignbarhetsanalyse, identifikasjonsproblemer |
 | [docs/02_method_decision.md](docs/02_method_decision.md) | Metodebeslutningsmatrise, inkludert begrunnet nei til prognosemodul |
@@ -78,7 +80,7 @@ Skillet er ikke smakssak. Ingen størrelse som ender i en figur eller en tekst, 
 ```
 pip install -e ".[dev]"                      # Python-laget
 python -m veitransport_energi.artifacts      # bygger alle artefakter og manifestet
-pytest                                       # 131 tester, uten nettverk
+pytest                                       # 141 tester, uten nettverk
 Rscript R/kontroll_artefakter.R              # uavhengig kontroll av leveransen
 Rscript R/bygg_figurer.R                     # figurene i figurer/
 ```

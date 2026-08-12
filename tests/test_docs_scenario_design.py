@@ -101,3 +101,38 @@ def test_ingen_scenariobane_kalles_mest_sannsynlig(tekst):
     )
     for forbudt in ("forventet bane", "prognose for", "vil bli"):
         assert forbudt not in lav, f"'{forbudt}' er prognosespråk om en scenariobane"
+
+
+def test_volumandelene_i_korreksjonen_stemmer_med_kontrolltabellen(tekst):
+    """Korreksjonen fra D-0033 skal hvile på tabellen, ikke på hukommelsen."""
+    v = pd.read_csv(os.path.join(ROOT, "artifacts", "control_volume_vs_distance.csv"),
+                    dtype={"periode": str})
+    siste = v["periode"].max()
+    d = v[v["periode"] == siste].set_index("energibaerer")
+    for baerer in ("bensin", "diesel"):
+        for kolonne in ("andel_innenfor_estimandet_pct", "andel_innenfor_volum_pct"):
+            assert _norsk(d.loc[baerer, kolonne]) in tekst, (
+                f"{baerer}/{kolonne} for {siste} mangler i korreksjonen"
+            )
+        differanse = _norsk(d.loc[baerer, "differanse_km_minus_volum_pp"])
+        assert f"{differanse} pp" in tekst, f"differansen for {baerer} ({differanse}) mangler"
+
+    a = pd.read_csv(os.path.join(ROOT, "artifacts", "control_fuel_volume_shares.csv"),
+                    dtype={"periode": str})
+    diesel = a[(a["energibaerer"] == "diesel") & (a["periode"] == siste)].iloc[0]
+    assert _norsk(diesel["andel_tunge_pct"]) in tekst, "tunge kjøretøys volumandel mangler"
+    bensin = a[(a["energibaerer"] == "bensin") & (a["periode"] == siste)].iloc[0]
+    assert _norsk(bensin["andel_motorsykler_pct"]) in tekst, "motorsyklenes volumandel mangler"
+
+
+def test_korreksjonen_er_synlig_og_ikke_en_stille_omskriving(tekst):
+    """Prosjektets praksis: en rettet påstand skal stå med hva som ble strøket.
+
+    Uten den ville leseren ikke kunne se at avgrensningen en gang var begrunnet
+    med at fordelingen ikke lot seg fastsette.
+    """
+    assert "Korreksjon 2026-08-12" in tekst
+    assert "kan ikke avgjøres fra prosjektets kilder" in tekst, (
+        "korreksjonen skal gjengi det som ble strøket, ikke bare erstatte det"
+    )
+    assert "ingen utslippsfaktor" in tekst or "uten at noen utslippsfaktor må" in tekst

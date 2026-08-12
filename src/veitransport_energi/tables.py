@@ -170,6 +170,36 @@ SPECS: list[TableSpec] = [
         description="Energibalansens post 12.2.1 Veitransport 1990-; el-fordelingsmetode uavklart",
         allow_unexplained_missing=True,
     ),
+    TableSpec(
+        table_id="13931",
+        name="emissions_13931_road",
+        value_codes={
+            # 5 er veitrafikk i alt; 5.1-5.4 er personbiler, andre lette kjøretøy,
+            # tunge kjøretøy og motorsykler. Aggregatet hentes med for at summen
+            # av delene skal kunne kontrolleres mot kilden framfor antas.
+            "UtslpTilLuft": ["5", "5.1", "5.2", "5.3", "5.4"],
+            # VT4 er bensin (og parafin), VT5 diesel og lette fyringsoljer.
+            "UtslpEnergivare": ["VT0", "VT4", "VT5"],
+            "UtslpKomp": ["K11"],
+            "ContentsCode": ["Utslipp"], "Tid": ["*"],
+        },
+        freq="A",
+        # Kilden oppgir én enhetstekst for hele variabelen fordi den dekker flere
+        # komponenter med ulik enhet. Uttrekket er avgrenset til K11 (CO2), som
+        # er den delen som måles i 1 000 tonn — men kontrakten sjekker mot
+        # kildens tekst framfor mot vår tolkning av den, slik at en endring i
+        # kilden gir rødt i stedet for å bli lest inn i vår forståelse.
+        expected_units={"Utslipp": "1 000 tonn, tonn eller kg"},
+        key_dims=("UtslpTilLuft", "UtslpEnergivare", "UtslpKomp"),
+        description=(
+            "Utslippsregnskapets CO2 fra veitrafikk 1990-, delt på kjøretøygruppe og "
+            "energivare; enheten er 1 000 tonn CO2 for komponenten K11 som hentes her. "
+            "Brukes til å dele drivstoffvolum på kjøretøygruppe: CO2 per liter er en "
+            "egenskap ved drivstoffet, ikke ved kjøretøyet, så forholdstallene mellom "
+            "gruppene er volumandeler uten at en utslippsfaktor må antas (D-0033)"
+        ),
+        allow_unexplained_missing=True,
+    ),
 ]
 
 SPECS_BY_NAME = {s.name: s for s in SPECS}
