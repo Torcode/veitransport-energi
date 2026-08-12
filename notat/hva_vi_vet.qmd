@@ -1,0 +1,155 @@
+---
+title: "Hva prosjektet vet nå"
+subtitle: "Status etter fase 3 · veitransport-energi"
+lang: nb
+format:
+  html:
+    toc: true
+    toc-title: Innhold
+    embed-resources: true
+    theme: none
+    css: notat.css
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r oppsett}
+# Roten finnes ved å lete oppover etter pyproject.toml, slik at notatet kan
+# rendres fra notat/, fra reporoten eller fra en IDE-sesjon uten forskjell.
+source(file.path(dirname(getwd()), "R", "oppstart.R"))
+rot <- last_prosjekt()
+hist <- les_artefakt("historical_statistics.csv", rot)
+reg <- les_artefakt("assumption_register.csv", rot)
+kohort <- les_artefakt("validation_cohort_model.csv", rot)
+stab <- les_artefakt("control_survival_parameter_stability.csv", rot)
+rec <- les_artefakt("control_energy_reconciliation.csv", rot)
+prov <- proveniens(rot)
+```
+
+Dette notatet leser bare publiserte artefakter. Ingen tall her regnes ut i
+dokumentet; alt som står, finnes i `artifacts/` og er bygget av Python-koden med
+sine egne tester. Notatet er skrevet i R for at det skal være sant at leveransen
+kan brukes uten prosjektets egen kode — klarer et annet verktøysett å reprodusere
+manifestets sjekksummer og lese tabellene, er artefaktene et produkt og ikke
+mellomregninger.
+
+Artefaktene her er bygget fra kode `r prov$kodeversjon`, commit `r prov$commit`,
+med siste kildeuttrekk `r substr(prov$siste_uttrekk, 1, 10)`.
+
+## Salget faller, men kildene tåler ikke én linje
+
+![](../figurer/salg_segmentert.png)
+
+Figuren viser årlig salg av bensin og autodiesel i millioner liter, bare for år
+med tolv observerte måneder. Den er relevant fordi salgstallene er den ene av to
+uavhengige målinger av energibruken i veitransport — den andre er odometerbasert
+kjørelengde — og fordi den viser prosjektets sentrale datavurdering direkte.
+
+Mønsteret kommer fra to ulike operasjoner på kildene. Bensinserien er skjøtt over
+tre SSB-tabeller fordi skjøtene er empirisk testet i alle overlappsmåneder og
+holder. Autodieselserien er ikke skjøtt: innsamlingen ble lagt om i 2020, og de to
+segmentene tegnes derfor som atskilte linjer. Hullet er figurens viktigste
+egenskap, ikke en mangel ved den.
+
+Begrensningen som følger: nivåforskjellen over bruddet kan ikke tolkes som
+utvikling, og en samlet prosentendring fra 2010 til i dag kan ikke leses av
+autodieselserien. Innenfor det siste segmentet er fallet reelt og stort — fra
+`r nf(rec$salg_mill_liter_autodiesel[rec$periode == 2020], 0)` millioner liter i
+2020 til `r nf(rec$salg_mill_liter_autodiesel[rec$periode == 2025], 0)` i 2025.
+Bensin faller jevnere, fra
+`r nf(rec$salg_mill_liter_bensin[rec$periode == 2020], 0)` til
+`r nf(rec$salg_mill_liter_bensin[rec$periode == 2025], 0)` millioner liter i samme
+periode. Merk at ingen av seriene er avgrenset til personbiler: tunge kjøretøy og
+annen bruk ligger i tallene, og det er derfor koblingen mot kjøretøygruppene må
+gjøres eksplisitt framfor antas.
+
+## Elbilene kjører mer enn resten av parken
+
+![](../figurer/elandel_bestand_mot_kjorelengde.png)
+
+```{r andeler}
+andel <- function(var, aar) {
+  d <- hist[hist$variabel == var & hist$gruppe == "personbiler" &
+              substr(hist$periode, 1, 4) == aar, ]
+  round(sum(d$verdi[d$drivlinje == "elektrisitet"]) / sum(d$verdi) * 100, 1)
+}
+b25 <- nf(andel("bestand_3112", "2025")); k25 <- nf(andel("kjorelengde_total", "2025"))
+```
+
+Figuren viser to andeler for personbiler: hvor stor del av bestanden som er
+elektrisk, og hvor stor del av de kjørte kilometerne elbilene står for. I 2025 er
+tallene `r b25` og `r k25` prosent.
+
+Forskjellen er beslutningsrelevant. Det er trafikkarbeidet, ikke antall biler, som
+fortrenger drivstoff, og en framskriving som regner om bestandsandel til
+energibruk uten dette leddet, vil undervurdere fortrengningen. Mønsteret oppstår
+fordi bestanden er talt per 31. desember mens kjørelengden gjelder hele året — for
+en flåte i rask vekst gjør det nevneren for stor og andelen for lav. Utslaget går
+altså i retning av å undervurdere elbilenes andel av trafikkarbeidet, ikke motsatt.
+
+Begrensningen: forholdet snudde tidlig i perioden. Fram til omkring 2014 ble
+elbiler kjørt vesentlig mindre enn resten av parken, og de årene bygger på få
+kjøretøy. Det er utviklingen etter 2015 som bærer tolkningen.
+
+## Hva modellen tåler
+
+```{r modell}
+verst <- nf(max(abs(kohort$avvik_pct[kohort$periode >= 2016]), na.rm = TRUE), 2)
+sk_el <- range(stab$weibull_scale[stab$drivlinje == "elektrisitet"])
+fo_el <- range(stab$weibull_shape[stab$drivlinje == "elektrisitet"])
+```
+
+Kohortmodellen bygger aldersfordelingen fra tilgangshistorikken og estimerer en
+overlevelseskurve mot observert bestandsutvikling. Parametrene er estimert på
+2009–2015 og målt mot 2016–2025, uten overlapp. Største avvik over de ti årene som
+ikke inngikk i estimeringen, er `r verst` prosent. Den enklere modellen med
+konstant avgangsrate bommet med 6,8 og 7,3 prosent på samme horisont, og det er
+den sammenligningen som berettiger kompleksiteten.
+
+Reestimering på rullerende sjuårsvinduer viser hva bestandsdata faktisk
+identifiserer. For elbiler ligger levetidsskalaen mellom `r nf(sk_el[1])` og
+`r nf(sk_el[2])` år over vinduene, mens formparameteren spenner fra `r nf(fo_el[1])` til
+`r nf(fo_el[2])`. Nivået er altså godt bestemt, mens hvor brått avgangen inntreffer,
+ikke er det — og det er formen en framskriving er følsom for.
+
+Den harde begrensningen står i antakelsesregisteret: bare sju prosent av
+elbilbestanden i 2025 er eldre enn åtte år, så kurvens hale er ekstrapolasjon.
+Ved de estimerte parametrene er overlevelsen til tjue års alder tilnærmet null.
+Det er funksjonsformen som løper videre forbi observasjonene, ikke et anslag på
+elbilers levetid.
+
+## Antakelsene resultatene hviler på
+
+```{r register}
+knitr::kable(
+  reg[, c("parameter_id", "verdi", "enhet", "status", "usikkerhet_lav", "usikkerhet_hoy")],
+  col.names = c("Parameter", "Verdi", "Enhet", "Status", "Lav", "Høy"),
+  caption = "Antakelsesregisteret. Fullstendig versjon med kilde, begrunnelse og kjent svakhet ligger i artifacts/assumption_register.csv."
+)
+```
+
+Tabellen viser hver størrelse modellen bruker uten å ha observert den. Statusen
+skiller eksterne anslag fra prosjektets egne estimater og fra rene
+brukerantakelser. Spennene for overlevelsesparametrene er reestimering på
+rullerende vinduer, ikke profilering av tilpasningen — profilen er langt smalere
+og ville gitt falsk presisjon.
+
+## Hvor vi står, og hva som gjenstår
+
+Fase 0 til 3 er gjennomført: designport, datalag med kontrakter og kodebok,
+publiserbar historisk statistikk med kontrolltabeller, og en strukturell modell
+med tidsdelt validering. Prognosemodul er avvist med begrunnelse i
+metodebeslutningen, så fase 4 utgår.
+
+Det som gjenstår er fase 5, scenarioer og usikkerhet, der følsomheten for
+overlevelsesparametrene og for utility factor skal bæres eksplisitt framfor å
+forsvinne i et punktanslag; fase 6, beslutningsflate, rådgivernotat og metodenote;
+og fase 7, releaserevisjon.
+
+To kjente svakheter følger med inn i fase 5. Utility factor for ladbare hybrider
+er ikke identifiserbar fra prosjektets egne data og må komme utenfra som
+sensitivitetsparameter. Og bruktimportalderen i kohortmodellen har ingen kilde;
+aldersfordelt bruktimport fra Statens vegvesen ville gjort den observert framfor
+antatt.

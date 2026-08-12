@@ -4,15 +4,30 @@ Kontrolltabellene er en del av leveransen, ikke bare av testene: en leser skal
 kunne se hvordan seriene henger sammen med kildene og med hverandre, uten å
 kjøre koden selv.
 
-Tre kontroller:
-    1. Gruppesum — publiserte drivlinjer skal summere til kildens totalserie.
-    2. Bestand mot aktivitet — koblingen fra D-0020, år for år.
-    3. Energiavstemming — salgsenergi mot energibalansens veitransportpost.
+Tabellene faller i tre grupper:
+
+Avstemminger mot kildene
+    gruppesum (publiserte drivlinjer mot kildens totalserie), bestand mot
+    aktivitet (koblingen fra D-0020) og energiavstemming (salgsenergi mot
+    energibalansens veitransportpost).
+
+Rekonstruerte størrelser
+    nettoavgang som residual i bestand-strøm-identiteten, og kalibrert
+    energiintensitet med sitt spenn.
+
+Validering og identifikasjon
+    backcast av rate-modellen, kohortmodellens tidsdelte validering,
+    overlevelseskurven fra aldersdata, definisjonsbruddet i aldersgruppene,
+    parameterstabiliteten i overlevelseskurven, og påvisningen av at utility
+    factor ikke lar seg identifisere fra prosjektets egne data.
 """
 from __future__ import annotations
 
 import pandas as pd
 
+from .cohort import FITTED_PARAMS, parameter_stability
+from .cohort import load_flows as cohort_flows
+from .cohort import simulate as cohort_simulate
 from .datasets import read_extract
 from .diagnostics import energy_reconciliation, utility_factor_identification
 from .linkage import stock_vs_activity
@@ -74,7 +89,14 @@ def control_tables() -> dict[str, pd.DataFrame]:
         ], ignore_index=True),
         "survival_curve.csv": pd.concat(
             [survival_curve("personbiler"), survival_curve("varebiler")], ignore_index=True),
+        "validation_cohort_model.csv": pd.concat([
+            cohort_simulate(cohort_flows("personbiler"), p, dl, "2008", "2025").assign(
+                gruppe="personbiler", weibull_scale=p.scale, weibull_shape=p.shape,
+                avvik_pct=lambda d: (d["modellert"] - d["observert"]) / d["observert"] * 100)
+            for dl, p in FITTED_PARAMS.items()
+        ], ignore_index=True),
         "control_age_definition_break.csv": pd.concat(
             [definition_break_check("personbiler"), definition_break_check("varebiler")],
             ignore_index=True),
+        "control_survival_parameter_stability.csv": parameter_stability("personbiler"),
     }

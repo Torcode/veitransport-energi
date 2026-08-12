@@ -7,9 +7,17 @@ data/extracts/** linguist-generated=true
 analysis/design_gate/api_cache/** linguist-generated=true
 analysis/design_gate/extracts/** linguist-generated=true
 
+# Figurene bygges av R/bygg_figurer.R fra publiserte artefakter og versjoneres
+# fordi README og notatene viser til dem. De redigeres aldri for hånd; en endring
+# her uten en tilsvarende endring i artefakt eller figurkode er en feil.
+figurer/** linguist-generated=true
+
 # Konsistente linjeskift i tekstfiler uansett plattform.
 * text=auto
 *.csv text eol=lf
 *.json text eol=lf
 *.py text eol=lf
 *.md text eol=lf
+*.R text eol=lf
+*.qmd text eol=lf
+*.png binary

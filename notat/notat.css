@@ -1,0 +1,54 @@
+/* Designsystemet fra docs/03_product_and_design.md, for notatene.
+   Systemnær sans uten webfont-avhengighet, rolig dokumentflyt, tabelltall med
+   like brede siffer. Serieidentitet i figurene bæres av figurkoden, ikke herfra. */
+
+:root {
+  --tekst: #1a1a1a;
+  --dempet: #555555;
+  --linje: #dddddd;
+  --bensin: #e69f00;
+  --autodiesel: #d55e00;
+  --elektrisitet: #0072b2;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  color: var(--tekst);
+  background: #ffffff;
+  line-height: 1.6;
+  max-width: 46rem;          /* omkring 70 tegn */
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  font-size: 1.02rem;
+}
+
+h1, h2, h3 { line-height: 1.25; margin-top: 2.4rem; }
+h1 { font-size: 1.7rem; margin-bottom: 0.25rem; }
+h1 + .subtitle, .subtitle { color: var(--dempet); font-size: 1.05rem; margin-top: 0; }
+h2 { font-size: 1.25rem; border-bottom: 1px solid var(--linje); padding-bottom: 0.3rem; }
+
+img { max-width: 100%; height: auto; display: block; margin: 1.5rem 0 0.5rem; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.25rem 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+}
+th, td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--linje); text-align: left; }
+th { border-bottom: 2px solid #bbbbbb; }
+td:nth-child(n + 2), th:nth-child(n + 2) { text-align: right; }
+caption { caption-side: bottom; color: var(--dempet); font-size: 0.9rem;
+          text-align: left; padding-top: 0.5rem; }
+
+code { font-size: 0.92em; background: #f4f4f4; padding: 0.1em 0.3em; border-radius: 3px; }
+pre code { background: none; padding: 0; }
+
+#TOC, nav[role="doc-toc"] { border-left: 3px solid var(--linje); padding-left: 1rem;
+                            margin: 1.5rem 0; font-size: 0.95rem; }
+
+@media (max-width: 700px) {
+  body { padding: 1.25rem 1rem 3rem; font-size: 1rem; }
+  table { display: block; overflow-x: auto; }
+}

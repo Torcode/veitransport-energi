@@ -12,7 +12,13 @@ on:
 jobs:
   kontroller:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    env:
+      # R-broen skal ikke kunne hoppes over stille i CI: uten dette ville testene
+      # meldt «skipped» på en runner uten R, og merket nedenfor lovet mer enn det
+      # holdt. Med KREV_R=1 er et hopp en feil.
+      KREV_R: "1"
+      LANG: C.UTF-8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,7 +26,18 @@ jobs:
           python-version: "3.11"
       - name: Installer pakken med utviklingsavhengigheter
         run: pip install -e ".[dev]"
+      - name: Installer R og pakkene figurlaget bruker
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            r-base-core r-cran-ggplot2 r-cran-readr r-cran-dplyr r-cran-tidyr \
+            r-cran-scales r-cran-jsonlite r-cran-digest r-cran-tibble r-cran-ragg
       - name: Lint (ruff)
-        run: ruff check src tests
+        run: ruff check .
       - name: Tester (pytest, uten nettverk, mot committede uttrekk)
         run: pytest
+      - name: Figurene skal kunne bygges på nytt fra artefaktene
+        run: |
+          Rscript R/bygg_figurer.R
+          git diff --exit-code -- figurer/figurspor.json \
+            || (echo "figurene i repoet er bygget fra et annet artefakt eller en annen kodeversjon enn den som ligger her — kjør Rscript R/bygg_figurer.R og commit resultatet" && exit 1)

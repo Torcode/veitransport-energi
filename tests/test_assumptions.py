@@ -76,3 +76,57 @@ def test_registeret_pa_disk_er_i_takt(reg):
     lagret = pd.read_csv(path)
     assert list(lagret.columns) == COLUMNS
     assert len(lagret) == len(reg)
+
+
+def test_modellens_parametre_star_i_registeret():
+    """Ingen modellstørrelse skal leve i koden uten å være ført i registeret."""
+    from veitransport_energi.cohort import FITTED_PARAMS
+
+    for drivlinje, p in FITTED_PARAMS.items():
+        etikett = "EL" if drivlinje == "elektrisitet" else "IKKEEL"
+        assert get(f"SURV_SKALA_{etikett}")["verdi"] == p.scale
+        assert get(f"SURV_FORM_{etikett}")["verdi"] == p.shape
+        assert get("SURV_IMPORTALDER")["verdi"] == p.import_age
+
+
+def test_overlevelsesspennet_er_hentet_fra_stabilitetstabellen():
+    """Spennene skal være beregnet, ikke skrevet inn for hånd.
+
+    Registeret oppgir usikkerheten for overlevelsesparametrene som spredningen
+    ved reestimering på rullerende vinduer. Her leses den tilbake fra tabellen
+    som produserer den; avviker de, er ett av stedene håndredigert.
+    """
+    path = os.path.join(os.path.dirname(__file__), "..", "artifacts",
+                        "control_survival_parameter_stability.csv")
+    assert os.path.exists(path), "stabilitetstabellen mangler — kjør artifacts-modulen"
+    tab = pd.read_csv(path)
+    for drivlinje, etikett in (("elektrisitet", "EL"), ("ikke_elektrisk", "IKKEEL")):
+        d = tab[tab["drivlinje"] == drivlinje]
+        assert not d.empty, f"stabilitetstabellen mangler {drivlinje}"
+        for stor, kolonne in (("SKALA", "weibull_scale"), ("FORM", "weibull_shape")):
+            a = get(f"SURV_{stor}_{etikett}")
+            assert a["usikkerhet_lav"] == pytest.approx(d[kolonne].min()), (
+                f"SURV_{stor}_{etikett}: nedre spenn stemmer ikke med tabellen"
+            )
+            assert a["usikkerhet_hoy"] == pytest.approx(d[kolonne].max()), (
+                f"SURV_{stor}_{etikett}: øvre spenn stemmer ikke med tabellen"
+            )
+
+
+def test_profilen_er_smalere_enn_vindusspredningen():
+    """Den smale SSE-profilen skal ikke kunne bli registerets usikkerhetsspenn.
+
+    Profilen innenfor ett estimeringsvindu er skarp fordi residualene er
+    seriekorrelerte, ikke fordi parameteren er godt bestemt. Testen låser at
+    registeret oppgir det bredere, ærlige spennet.
+    """
+    path = os.path.join(os.path.dirname(__file__), "..", "artifacts",
+                        "control_survival_parameter_stability.csv")
+    tab = pd.read_csv(path)
+    for drivlinje, etikett in (("elektrisitet", "EL"), ("ikke_elektrisk", "IKKEEL")):
+        d = tab[tab["drivlinje"] == drivlinje]
+        profil = (d["profil_skala_hoy"] - d["profil_skala_lav"]).max()
+        vindu = d["weibull_scale"].max() - d["weibull_scale"].min()
+        assert profil < vindu, f"{drivlinje}: profil {profil} skal være smalere enn {vindu}"
+        a = get(f"SURV_SKALA_{etikett}")
+        assert a["usikkerhet_hoy"] - a["usikkerhet_lav"] == pytest.approx(vindu)

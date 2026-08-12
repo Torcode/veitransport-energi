@@ -10,9 +10,18 @@ venv/
 Thumbs.db
 *.swp
 
-# Lokale leveransepakker (ligger ikke i repoet)
+# Lokale leveransepakker (ligger ikke i repoet). Bundlene og PR-tekstene er
+# transportmiddelet mellom skyøkta og maskinen her; de hoper seg opp i
+# arbeidsmappen og skal aldri havne i historikken. Uten dette ville et enkelt
+# `git add -A` lagt flere megabyte pakkefiler inn i et offentlig repo.
 analysis_design_gate_fase0.zip
+*.bundle
+PR_tekst_*.md
 
 # RStudio (prosjektmappen lokalt kan inneholde dette)
 .Rproj.user/
 *.Rproj
+
+# R-kontrollens utdata er en kjoerelogg, ikke et artefakt: den hoerer hjemme i
+# testkjoeringen, ikke i repoet. Artefaktene selv ligger i artifacts/.
+R/kontrollresultat.json

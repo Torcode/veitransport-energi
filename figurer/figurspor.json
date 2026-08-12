@@ -1,0 +1,18 @@
+{
+  "kodeversjon": "0.1.0",
+  "artefakt_commit": "6ba01152",
+  "artefakter_bygget": "2026-08-12T01:21:22+00:00",
+  "manifest_sha256": "e3575226d6418222ab2478516fb6af8f39478c2a18241c7b8cbe0cd56eecdd52",
+  "figurer": {
+    "salg_segmentert.png": {
+      "tittel": "Salget av bensin og autodiesel faller, men kildene tåler ikke én linje",
+      "kildelinje": "Kilde: SSB 03687, 11174, 13585 · uttrekk 2026-08-04 · brudd i autodiesel 2020 vist som avbrudd, ikke skjøtt\nkode 0.1.0, commit 6ba01152, artefakter bygget 2026-08-12",
+      "bygget_fra_artefakt": "historical_statistics.csv"
+    },
+    "elandel_bestand_mot_kjorelengde.png": {
+      "tittel": "Elbilene kjører mer enn resten av parken, ikke mindre",
+      "kildelinje": "Kilde: SSB 07849, 12577 · uttrekk 2026-08-04 · bestand per 31.12, kjørelengde odometerbasert\nkode 0.1.0, commit 6ba01152, artefakter bygget 2026-08-12",
+      "bygget_fra_artefakt": "historical_statistics.csv"
+    }
+  }
+}
