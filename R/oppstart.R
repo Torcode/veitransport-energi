@@ -48,9 +48,15 @@ prosjektrot <- function() {
        call. = FALSE)
 }
 
-#' Last R-laget med UTF-8 sikret foerst.
+#' Last R-laget med UTF-8 og pakkekravene sikret foerst.
+#'
+#' Rekkefoelgen er ikke tilfeldig: locale foerst, saa pakker, saa kildefilene.
+#' Begge vaktene er der for at en manglende forutsetning skal si hva den er,
+#' framfor aa dukke opp senere som en uforstaaelig feil i en figur eller et notat.
 last_prosjekt <- function(rot = prosjektrot()) {
   krev_utf8()
+  source(file.path(rot, "R", "kravpakker.R"))
+  krev_pakker()
   Sys.setenv(VEITRANSPORT_ROT = rot)
   for (f in c("artefakter.R", "design.R", "figurer.R")) {
     source(file.path(rot, "R", f), encoding = "UTF-8")
