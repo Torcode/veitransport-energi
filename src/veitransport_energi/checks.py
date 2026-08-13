@@ -23,7 +23,8 @@ Validering og identifikasjon
 
 Avgrensning
     hvor stor del av hver energibærers kjørelengde som ligger innenfor
-    estimandet — grunnlaget for hva fase 5 kan framskrive og hva den ikke kan.
+    estimandet, hvor stor del av *volumet* som gjør det, og differansen mellom
+    de to — grunnlaget for hva fase 5 kan framskrive og hva den ikke kan.
 """
 from __future__ import annotations
 
@@ -35,6 +36,7 @@ from .cohort import simulate as cohort_simulate
 from .coverage import estimand_coverage
 from .datasets import read_extract
 from .diagnostics import energy_reconciliation, utility_factor_identification
+from .fuelsplit import volume_shares, volume_vs_distance
 from .linkage import stock_vs_activity
 from .reconstruction import calibrated_intensity, net_retirement
 from .series import DRIVLINJER, GROUPS
@@ -105,4 +107,6 @@ def control_tables() -> dict[str, pd.DataFrame]:
             ignore_index=True),
         "control_survival_parameter_stability.csv": parameter_stability("personbiler"),
         "control_estimand_coverage.csv": estimand_coverage(),
+        "control_fuel_volume_shares.csv": volume_shares(),
+        "control_volume_vs_distance.csv": volume_vs_distance(),
     }
