@@ -65,3 +65,35 @@ def test_hvert_artefakt_har_rader_og_datavintage(manifest):
     for navn, v in manifest["data_vintage"].items():
         for felt in ("table_id", "source_updated", "last_period", "sha256_extract"):
             assert str(v.get(felt, "")).strip(), f"{navn} mangler {felt} i datavintage"
+
+
+def test_figursporet_peker_paa_manifestet_som_ligger_her():
+    """Figurene skal ikke kunne bli stående på et grunnlag som er skiftet ut.
+
+    Kontrollen finnes i CI som en gjenbygging i R, men den er også ren
+    filsammenligning — og bør derfor feile lokalt, før en push, uten at R er
+    installert.
+
+    Første utgave av figursporet førte også manifestets commit og
+    byggetidspunkt. Begge endrer seg av seg selv hver gang artefaktene bygges
+    ved en ny HEAD, så kontrollen ble rød uten at figurene var feil, og den
+    røde CI-en fulgte med inn på main. Sporet inneholder nå bare størrelser som
+    er stabile gitt samme grunnlag.
+    """
+    spor_sti = os.path.join(ROOT, "figurer", "figurspor.json")
+    if not os.path.exists(spor_sti):
+        pytest.skip("figurer/figurspor.json mangler — kjør Rscript R/bygg_figurer.R")
+    with open(spor_sti, encoding="utf-8") as f:
+        spor = json.load(f)
+
+    flyktige = {"artefakt_commit", "artefakter_bygget", "bygget_utc", "git_commit"}
+    assert not flyktige & set(spor), (
+        f"figursporet inneholder felt som endrer seg av seg selv: {flyktige & set(spor)}"
+    )
+    assert spor["manifest_sha256"] == _sha256(MANIFEST), (
+        "figurene er bygget fra et annet manifest enn det som ligger her — "
+        "kjør python -m veitransport_energi.artifacts og deretter Rscript R/bygg_figurer.R"
+    )
+    for navn, info in spor["figurer"].items():
+        assert os.path.exists(os.path.join(ROOT, "figurer", navn)), f"{navn} mangler"
+        assert info["tittel"].strip(), f"{navn} mangler tittel i sporet"

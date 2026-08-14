@@ -38,6 +38,7 @@ from .datasets import read_extract
 from .diagnostics import energy_reconciliation, utility_factor_identification
 from .fuelsplit import volume_shares, volume_vs_distance
 from .linkage import stock_vs_activity
+from .mileage import mileage_identification, mileage_per_vehicle
 from .reconstruction import calibrated_intensity, net_retirement
 from .series import DRIVLINJER, GROUPS
 from .stockflow import backcast
@@ -109,4 +110,6 @@ def control_tables() -> dict[str, pd.DataFrame]:
         "control_estimand_coverage.csv": estimand_coverage(),
         "control_fuel_volume_shares.csv": volume_shares(),
         "control_volume_vs_distance.csv": volume_vs_distance(),
+        "reconstruction_mileage_per_vehicle.csv": mileage_per_vehicle(),
+        "control_mileage_identification.csv": mileage_identification(),
     }

@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-12T18:20:09+00:00",
- "git_commit": "e984d7b5f1c39aad50c8dc7286f1155d1e37d2de",
+ "built_utc": "2026-08-14T04:31:01+00:00",
+ "git_commit": "4bd0d50e5220cddd8a1a687e42dc2ed000923334",
  "arbeidstre": "endret",
  "code_version": "0.1.0",
  "python": "3.11.15",
@@ -136,6 +136,14 @@
   "control_volume_vs_distance.csv": {
    "rows": 40,
    "sha256": "e92d2d0197bf0a071e1a1147f40a64381dcaff7f384b885676a9faabcf510e3e"
+  },
+  "reconstruction_mileage_per_vehicle.csv": {
+   "rows": 82,
+   "sha256": "f204e0910a15a3459daef694aaf7cad3f4dc74d7364ad2f0673cd0d8486d1632"
+  },
+  "control_mileage_identification.csv": {
+   "rows": 2,
+   "sha256": "f22f8e55a01b95b9edd0fa8e8f1f55dcf7d0ef49d53a47eb5edfc49f5ae3ae03"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her. git_commit er treets tilstand da artefaktene ble bygget; er arbeidstre 'endret', ble de bygget før commit, og den endelige commiten er en etterkommer."
