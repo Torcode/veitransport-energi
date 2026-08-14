@@ -25,7 +25,6 @@ for (navn in names(figurer)) {
                   dpi = 150, device = ragg::agg_png, bg = "white")
   oppforinger[[navn]] <- list(
     tittel = figurer[[navn]]$labels$title,
-    kildelinje = figurer[[navn]]$labels$caption,
     bygget_fra_artefakt = "historical_statistics.csv"
   )
   cat(sprintf("OK  figurer/%s\n", navn))
@@ -34,12 +33,16 @@ for (navn in names(figurer)) {
 # Provenienssporet skrives som tekst, ikke som en sammenligning av bildepunkter.
 # En byte-for-byte-kontroll av PNG-ene ville roeket paa ulike font- og
 # bibliotekversjoner uten at noe faglig var galt; det denne fanger, er det som
-# faktisk betyr noe -- at en figur i repoet viser til et artefakt eller en
-# kodeversjon den ikke lenger er bygget fra.
+# faktisk betyr noe -- at en figur i repoet viser til et annet grunnlag enn det
+# som ligger her.
+#
+# Sporet inneholder med vilje ingen stoerrelse som endrer seg av seg selv.
+# Foerste utgave foerte ogsaa commit og byggetidspunkt fra manifestet, og da ble
+# kontrollen roed hver gang artefaktene ble bygget paa nytt ved en ny HEAD --
+# uten at figurene var feil. Manifestets sjekksum daekker begge deler: endrer
+# artefaktene seg, endrer den seg.
 spor <- list(
   kodeversjon = prov$kodeversjon,
-  artefakt_commit = prov$commit,
-  artefakter_bygget = prov$bygget,
   manifest_sha256 = digest::digest(
     file = file.path(rot, "artifacts", "release_manifest.json"), algo = "sha256"),
   figurer = oppforinger

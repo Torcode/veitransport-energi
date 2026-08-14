@@ -24,8 +24,14 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 @pytest.fixture(scope="module")
 def readme() -> str:
+    """README-teksten med typografisk minus normalisert til bindestrek.
+
+    Teksten bruker ekte minustegn (U+2212) foran negative tall, som er riktig
+    typografi. Testene sammenligner mot Pythons formatering, som bruker
+    bindestrek — uten normaliseringen ville et korrekt tall sett feil ut.
+    """
     with open(os.path.join(ROOT, "README.md"), encoding="utf-8") as f:
-        return f.read()
+        return f.read().replace("\u2212", "-")
 
 
 @pytest.fixture(scope="module")
@@ -56,15 +62,15 @@ def test_antall_kilder_i_readme_stemmer(readme):
     assert int(treff.group(1)) == len(kilder)
 
 
-def test_readme_viser_til_siste_beslutning(readme):
-    """Statuslinjen skal peke på den nyeste beslutningen, ikke på en gammel."""
+def test_antall_beslutninger_i_readme_stemmer(readme):
+    """Lenken til beslutningsloggen oppgir et antall; det skal ikke drive fra loggen."""
     with open(os.path.join(ROOT, "docs", "decision_log.md"), encoding="utf-8") as f:
         logg = f.read()
-    siste = max(int(n) for n in re.findall(r"D-(\d{4})", logg))
-    treff = re.search(r"Sist oppdatert etter beslutning D-(\d{4})", readme)
-    assert treff, "README mangler henvisning til siste beslutning"
-    assert int(treff.group(1)) == siste, (
-        f"README viser til D-{treff.group(1)}, mens loggen er kommet til D-{siste:04d}"
+    antall = len(re.findall(r"^\*\*D-\d{4} ", logg, re.MULTILINE))
+    treff = re.search(r"(\d+) daterte beslutninger", readme)
+    assert treff, "README oppgir ikke antall beslutninger"
+    assert int(treff.group(1)) == antall, (
+        f"README sier {treff.group(1)} beslutninger, loggen har {antall}"
     )
 
 
@@ -76,30 +82,58 @@ def test_figurene_readme_viser_til_finnes(readme):
         assert os.path.exists(os.path.join(ROOT, rel)), f"README viser til {rel}, som mangler"
 
 
-def test_hovedtallene_i_readme_stemmer_med_artefaktene(readme):
-    """Tallene i «Hva vi vet» skal komme fra artefaktene, ikke fra hukommelsen."""
-    h = pd.read_csv(os.path.join(ROOT, "artifacts", "historical_statistics.csv"))
+def _norsk(x: float, desimaler: int = 1) -> str:
+    return f"{x:.{desimaler}f}".replace(".", ",")
 
-    def elandel(variabel: str) -> str:
-        d = h[(h["variabel"] == variabel) & (h["gruppe"] == "personbiler")
-              & (h["periode"].astype(str).str[:4] == "2025")]
-        andel = d.loc[d["drivlinje"] == "elektrisitet", "verdi"].sum() / d["verdi"].sum() * 100
-        return f"{andel:.1f}".replace(".", ",")
 
-    for variabel in ("bestand_3112", "kjorelengde_total"):
-        assert elandel(variabel) in readme, f"README mangler {elandel(variabel)} for {variabel}"
-
-    rec = pd.read_csv(os.path.join(ROOT, "artifacts", "control_energy_reconciliation.csv"))
-    for aar, kolonne in ((2020, "salg_mill_liter_bensin"), (2025, "salg_mill_liter_bensin"),
-                         (2025, "salg_mill_liter_autodiesel")):
-        verdi = int(round(rec.loc[rec["periode"] == aar, kolonne].iloc[0]))
-        assert f"{verdi:,}".replace(",", " ") in readme or str(verdi) in readme, (
-            f"README mangler {verdi} ({kolonne} {aar})"
-        )
+def test_hovedfunnets_tall_stemmer_med_artefaktene(readme):
+    """Forsidens hovedfunn skal komme fra artefaktene, ikke fra hukommelsen."""
+    v = pd.read_csv(os.path.join(ROOT, "artifacts", "control_volume_vs_distance.csv"),
+                    dtype={"periode": str})
+    siste = v["periode"].max()
+    d = v[v["periode"] == siste].set_index("energibaerer")
+    for baerer, kolonner in (("diesel", ("andel_personbiler_pct_km",
+                                         "andel_personbiler_pct_volum",
+                                         "andel_tunge_pct")),
+                             ("bensin", ("andel_innenfor_volum_pct",))):
+        for kolonne in kolonner:
+            assert _norsk(d.loc[baerer, kolonne]) in readme, (
+                f"README mangler {kolonne} for {baerer} ({_norsk(d.loc[baerer, kolonne])})"
+            )
+    assert _norsk(d.loc["diesel", "andel_innenfor_volum_pct"]) in readme
 
     kohort = pd.read_csv(os.path.join(ROOT, "artifacts", "validation_cohort_model.csv"))
     verst = kohort[kohort["periode"] >= 2016]["avvik_pct"].abs().max()
-    assert f"{verst:.2f}".replace(".", ",") in readme, "README mangler modellens største avvik"
+    assert _norsk(verst, 2) in readme, "README mangler modellens største avvik"
+
+
+def test_identifikasjonsfunnet_paa_forsiden_stemmer(readme):
+    """Den negative konklusjonen om kjørelengde skal hvile på kontrolltabellen.
+
+    Nettopp fordi den er negativ, er den lett å skrive om til noe sterkere eller
+    svakere uten at noen merker det.
+    """
+    d = pd.read_csv(os.path.join(ROOT, "artifacts", "control_mileage_identification.csv"))
+    rad = d[d["drivlinje"] == "ikke_elektrisk"].iloc[0]
+    assert _norsk(rad["korr_niva_km_mot_alder"], 3) in readme, "nivåkorrelasjonen mangler"
+    assert _norsk(rad["korr_differanse_km_mot_alder"], 2) in readme, (
+        "differansekorrelasjonen mangler — den er selve begrunnelsen"
+    )
+
+    m = pd.read_csv(os.path.join(ROOT, "artifacts", "reconstruction_mileage_per_vehicle.csv"),
+                    dtype={"periode": str})
+    fin = m[m["oppdeling"] == "fin"].pivot_table(
+        index="periode", columns="drivlinje", values="km_per_kjoretoy")
+    for drivlinje in ("bensin", "diesel", "elektrisitet"):
+        for aar in ("2016", "2025"):
+            ventet = f"{int(round(fin.loc[aar, drivlinje], -1)):,}".replace(",", " ")
+            assert ventet in readme, f"{drivlinje} {aar}: {ventet} km mangler på forsiden"
+
+
+def test_avgrensningen_mot_autodiesel_staar_paa_forsiden(readme):
+    """Den feilen en leser lettest gjør, skal være vanskelig å gjøre."""
+    flat = re.sub(r"\s+", " ", readme)
+    assert "ikke en framskriving av autodieselsalget" in flat
 
 
 def test_readme_lister_artefaktmappen_som_manifestet_kjenner():

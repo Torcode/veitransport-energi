@@ -1,100 +1,118 @@
-# veitransport-energi
+# Energiomstillingen i norsk veitransport
 
-[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml) — lint og 141 tester uten nettverk, mot committede uttrekk, samt en kontroll av at R-laget leser de samme tallene som Python. Nettverkskrevende kildekontroller inngår ikke og kjøres manuelt.
+[![pr-kontroller](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/Torcode/veitransport-energi/actions/workflows/pr-checks.yml)
 
-Statistikk- og beslutningsgrunnlag for energiomstillingen i norsk veitransport: hvordan utskiftingen av person- og varebilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet — historisk, og i betingede scenarioer fram mot 2035.
+Hvordan utskiftingen av person- og varebilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet — historisk fra 1995, og i betingede scenarioer fram mot 2035. Bygget for beslutninger der etterspørselsbanen er premisset: avgiftsproveny som faller ulikt for bensin og diesel, dimensjonering av ladeinfrastruktur, og vurdering av hvor lenge en fossil restetterspørsel blir stående.
 
-**Status: fase 3 av 7 gjennomført** (fase 4 utgår; prognosemodul er avvist med begrunnelse). Datalaget, den historiske statistikken og modellkjernen med validering ligger her. Scenarioer, beslutningsflate og rådgivernotat gjenstår. Sist oppdatert etter beslutning D-0033.
+## Hovedfunnet
 
-## Hva vi vet
+**Den spaken norske omstillingsanalyser vanligvis betinger på, er brukt opp.** Elandelen av nyregistrerte personbiler var 94,8 prosent i 2025; bensin og diesel utgjorde 2,2 prosent til sammen. Forskjellen mellom et scenario med 95 og ett med 100 prosent er to prosent av nyregistreringene i én årgang. Den fossile tilgangen til personbilparken var 4 100 biler mot en fossil bestand på 1,6 millioner — **0,25 prosent**. Neste års fossile bilpark er i praksis allerede bestemt.
 
-**Salget faller, men kildene tåler ikke én linje.**
+Usikkerheten har flyttet seg til tre andre steder, og alle tre er tallfestet her:
+
+**Hvor fort den eksisterende parken forlater veien.** Kohortmodellen identifiserer levetidsnivået godt, men ikke formen på avgangskurven — 4–10 prosents spredning på skalaen mot 40–45 på formen ved reestimering på rullerende vinduer. Det er formen en framskriving er følsom for.
+
+**Hvor mye de gjenværende fossile bilene kjøres.** Kjørelengden per bensinbil har falt fra 10 160 til 8 060 km i året siden 2016, per dieselbil fra 15 430 til 12 420, mens elbilene har gått fra 11 910 til 13 530. I nivå ser fallet strukturelt ut — korrelasjonen med modellert flåtealder er −0,978 — men i førstedifferanser forsvinner sammenhengen (−0,03). Alder og kalendertid er nær kollineære i vinduet, så mekanismen er ikke identifisert, og størrelsen bæres som scenarioforutsetning framfor som estimert relasjon.
+
+**Hvem som bruker drivstoffet.** Personbilene kjører 56,3 prosent av dieselkilometerne, men bruker 33,0 prosent av dieselen; tunge kjøretøy kjører 13,7 prosent og bruker 44,9 prosent. Fordelingen er utledet av utslippsregnskapet uten at noen utslippsfaktor er antatt — CO2 per liter er en egenskap ved drivstoffet, ikke ved kjøretøyet, så forholdstallene mellom gruppene *er* volumandeler.
+
+Konsekvensen for hva produktet kan påstå er skarp: bensinetterspørselen er i praksis en personbilhistorie (91,8 prosent av volumet ligger innenfor estimandet), mens person- og varebiler bare er 55,1 prosent av autodieselvolumet. En framskriving for disse gruppene er derfor ikke en framskriving av autodieselsalget, og resultatfilene sier det i navnet.
 
 ![Salget av bensin og autodiesel](figurer/salg_segmentert.png)
 
-Bensinserien er skjøtt over tre SSB-tabeller fordi skjøtene er empirisk testet i alle overlappsmåneder. Autodieselserien er det ikke: innsamlingen ble lagt om i 2020, og segmentene står derfor atskilt. Nivåforskjellen over bruddet kan ikke leses som utvikling. Innenfor det siste segmentet er fallet reelt — fra 2 872 millioner liter i 2020 til 2 301 i 2025, mens bensin gikk fra 968 til 824.
+> **Uavhengig prosjekt.** Dette er et privat fag- og porteføljeprosjekt. Det er ikke utført på oppdrag fra, eller i samarbeid med, Statistisk sentralbyrå, Statens vegvesen, NVE eller andre av kildeeierne. Alt datagrunnlag er offentlig og aggregert; ingen person- eller registerdata inngår.
 
-**Elbilene kjører mer enn resten av parken.**
+## Slik er resultatene belagt
 
-![Elbilenes andel av bestand og kjørelengde](figurer/elandel_bestand_mot_kjorelengde.png)
+Rekkefølgen er ikke tilfeldig — hvert ledd forutsetter leddet før.
 
-I 2025 er 32,2 prosent av personbilbestanden elektrisk, men elbilene står for 36,5 prosent av de kjørte kilometerne. Det er trafikkarbeidet som fortrenger drivstoff, så en framskriving som går rett fra bestandsandel til energibruk, undervurderer fortrengningen. Forholdet var motsatt før 2015, da elbiler ble kjørt omkring halvparten så langt som resten av parken.
+1. **Kildene er verifisert, ikke antatt.** 29 kilder står i registeret med definisjon, enhet, lisens og kontrollstatus per kilde; de som ikke er lest mot primærkilde, er merket som det framfor å bli sitert som om de var. Elleve SSB-tabeller hentes maskinelt med logget API-kall, filcache og datakontrakt som feiler høyt på skjema, enhet, nøkkelunikhet, tidsakse og statuskoder. Kontrakten stanset senest innhentingen av utslippsregnskapet fordi enhetsteksten dekker flere komponenter.
 
-**To uavhengige målesystemer stemmer på totalen.** Salgsstatistikkens energiinnhold og energibalansens veitransportpost ligger innenfor 0,96–1,01 av hverandre for 2010–2024, med 0,98 som typisk forhold. Avstemmingen holder på summen, men ikke per produkt — og den grensen står navngitt framfor å bli skjult.
+2. **Bruddene er funnet, ikke glattet.** Salgsserien skjøtes bare der skjøten er empirisk testet i overlappsmånedene; autodieselserien er delt ved innsamlingsbruddet i 2020 og tegnes med synlig avbrudd. Ved forberedelsen av kohortmodellen ble et udokumentert brudd i SSBs aldersdefinisjon mellom 2023 og 2024 funnet, og kohortsporing over grensen er sperret i koden.
 
-**Modellen treffer på ti års horisont, men bare der data rekker.** En kohortmodell som bygger aldersfordelingen fra tilgangshistorikken og estimerer overlevelse mot observert bestand, bommer med høyst 2,03 prosent over ti år som ikke inngikk i estimeringen. Den enklere modellen med konstant avgangsrate bommet med 6,8 og 7,3 prosent. Reestimering på rullerende vinduer viser hva bestandsdata faktisk identifiserer: levetidsnivået er godt bestemt (4–10 prosents spredning), mens formen på avgangskurven ikke er det (40–45 prosent). Bare sju prosent av elbilbestanden i 2025 er over åtte år, så kurvens hale er ekstrapolasjon.
+3. **Modellen er validert tidsdelt, mot en enklere referanse.** Parametrene estimeres på 2009–2015 og måles mot 2016–2025 uten overlapp; funksjonen nekter å kjøre ved overlapp. Avviket over de ti årene som ikke inngikk, er 0,03–2,03 prosent, mot 6,8 og 7,3 prosent for den enkle rate-modellen som beholdes i koden som baseline. Kompleksiteten er dermed dokumentert berettiget framfor forutsatt.
 
-**Personbilene kjører over halvparten av dieselkilometerne, men bruker en tredel av dieselen.** Utslippsregnskapet fører CO2 fra veitrafikk delt på kjøretøygruppe, og siden CO2 per liter er en egenskap ved drivstoffet og ikke ved kjøretøyet, er forholdstallene mellom gruppene volumandeler — uten at noen utslippsfaktor må antas. I 2024 sto personbilene for 56,3 prosent av dieselkilometerne og 33,0 prosent av volumet, mens tunge kjøretøy kjørte 13,7 prosent av kilometerne og brukte 44,9 prosent av dieselen. Det avgjør hva en framskriving for person- og varebiler kan påstå om autodieselsalget: den dekker 55,1 prosent av volumet, ikke 86 prosent som kilometerandelen alene skulle tilsi.
+4. **Usikkerheten er målt der den finnes, og navngitt der den ikke lar seg måle.** Overlevelsesparametrenes spenn kommer fra reestimering på rullerende vinduer, ikke fra profilering av tilpasningen — profilen er fire ganger smalere og ville vært falsk presisjon. Utility factor for ladbare hybrider er vist å være uidentifiserbar fra prosjektets data og behandles som ekstern sensitivitetsparameter. Bare sju prosent av elbilbestanden er over åtte år, så overlevelseskurvens hale er ekstrapolasjon, og det står i registeret.
 
-**Én sentral parameter lar seg ikke identifisere fra prosjektets data.** Utility factor for ladbare hybrider — andelen kjørelengde på forbrenningsmotor — gir implisert elandel fra under 0 til over 1 når elbilintensiteten varieres innenfor sitt eget usikkerhetsspenn. Den må komme utenfra og behandles som sensitivitetsparameter, aldri som kalibrert størrelse.
+5. **Leveransen er brukbar uten prosjektets egen kode.** Alle resultatfiler er bundet til datavintage, kodeversjon og commit i et manifest, og et uavhengig R-lag reproduserer manifestets sjekksummer og leser hver tabell uten å røre Python-koden. Kontrollen kjører i CI og kan ikke hoppes over stille.
 
-Notatet [notat/hva_vi_vet.qmd](notat/hva_vi_vet.qmd) utdyper hvert punkt med hva figurene viser, hvorfor de er relevante, hvordan dataene produserer mønsteret og hvilke begrensninger som gjelder.
+151 tester kjører uten nettverk mot committede uttrekk. Hver av dem er vist å kunne feile ved mutasjon før den ble beholdt — også testene som håndhever begrepsdisiplinen i dokumentene.
 
-## Hvor vi er
+## Les arbeidet
 
-| Fase | Innhold | Status |
-|---|---|---|
-| 0 | Designport: datamatrise, sammenlignbarhet, metodebeslutning | gjennomført |
-| 1 | Datalag: uttrekk, kontrakter, kodebok, kilderegister | gjennomført |
-| 2 | Publiserbar historisk statistikk med kontrolltabeller | gjennomført |
-| 3 | Strukturell modell og historisk validering | gjennomført |
-| 4 | Prognosemodul | utgår — avvist i metodebeslutningen |
-| 5 | Scenarioer og usikkerhet | gjenstår |
-| 6 | Beslutningsflate, rådgivernotat, metodenote | gjenstår |
-| 7 | Releaserevisjon | gjenstår |
-
-Arbeidet skjer i fasebrancher med gjennomgåbare pull requests; `main` er releasegren. Hver material beslutning er datert og begrunnet i [decision_log.md](docs/decision_log.md), med alternativer og opphav.
-
-## Hva som skjer videre
-
-Fase 5 skal bære to dokumenterte usikkerheter eksplisitt framfor å skjule dem i punktanslag: formen på overlevelseskurven, som framskrivingen er langt mer følsom for enn modellens historiske tilpasningsfeil skulle tilsi, og utility factor, som ikke lar seg identifisere fra egne data. Scenarioene skal betinge på utskiftingsdynamikken i nyregistreringene, og hvert framtidsrettet resultat merkes som framskriving, scenario, kontrafaktisk beregning eller sensitivitetsanalyse — aldri som prognose.
-
-To åpne kildepunkter følger med: aldersfordelt bruktimport fra Statens vegvesen ville gjort kohortmodellens importalder observert framfor antatt, og ICCTs tall for utility factor er identifisert, men theicct.org blokkerer maskinell henting.
-
-## Innhold
-
-| Sti | Innhold |
+| | |
 |---|---|
-| [artifacts/](artifacts/) | Alle resultatfiler, med `release_manifest.json` som binder dem til datavintage, kodeversjon og commit |
-| [src/veitransport_energi/](src/veitransport_energi/) | Uttrekk, datakontrakter, serier, modeller og artefaktbygging |
-| [R/](R/) | Uavhengig lesing av artefaktene, designsystem og figurer |
-| [notat/](notat/) | Quarto-notater bygget utelukkende fra publiserte artefakter |
-| [tests/](tests/) | 141 tester, alle demonstrert å kunne feile før de ble beholdt |
-| [docs/00_project_charter.md](docs/00_project_charter.md) | Beslutningsproblem, hovedestimand, brukere, avgrensninger |
-| [docs/01_design_gate.md](docs/01_design_gate.md) | Datamatrise, sammenlignbarhetsanalyse, identifikasjonsproblemer |
-| [docs/02_method_decision.md](docs/02_method_decision.md) | Metodebeslutningsmatrise, inkludert begrunnet nei til prognosemodul |
-| [docs/03_product_and_design.md](docs/03_product_and_design.md) | Brukerreise, informasjonsarkitektur, designsystem |
-| [docs/04_scenario_design.md](docs/04_scenario_design.md) | Hva scenarioene betinger på, og hva estimandet dekker |
-| [docs/decision_log.md](docs/decision_log.md) | Daterte beslutninger med alternativer, begrunnelse og opphav |
-| [docs/data_policy.md](docs/data_policy.md) | Rådatapolitikk, kodebok, kanonisk innlesing |
-| [data/metadata/source_register.csv](data/metadata/source_register.csv) | 29 kilder med definisjoner, lisens og kontrollstatus |
+| [`notat/hva_vi_vet.qmd`](notat/hva_vi_vet.qmd) | Statusnotatet: hver figur med hva den viser, hvorfor den er relevant, hvordan dataene produserer mønsteret og hvilke begrensninger som gjelder |
+| [`docs/04_scenario_design.md`](docs/04_scenario_design.md) | Hva scenarioene betinger på, hva estimandet dekker, og hvorfor den vanlige framgangsmåten ikke duger her |
+| [`docs/01_design_gate.md`](docs/01_design_gate.md) | Datamatrise, sammenlignbarhetsanalyse og identifikasjonsproblemene som styrer alt senere |
+| [`docs/decision_log.md`](docs/decision_log.md) | 35 daterte beslutninger med alternativer, evidens og opphav — også de der tidligere konklusjoner er korrigert |
+| [`artifacts/`](artifacts/) | Alle resultatfiler med manifest; ingen hovedtall finnes to steder |
 
-## Arbeidsdeling mellom Python og R
+## Datagrunnlaget
 
-Python eier alt som er beregning: uttrekk fra API, datakontrakter, skjøting, enhetsomregning, modeller, validering og bygging av artefakter. R eier framstillingen: figurer, notater og en uavhengig lesing av leveransen.
+Alt er åpne data, hentet maskinelt med reproduserbare skript og arkivert slik de ble hentet.
 
-Skillet er ikke smakssak. Ingen størrelse som ender i en figur eller en tekst, regnes ut i R — filtrering og sammenstilling for framstilling er tillatt, estimering og avledning er det ikke. Ellers ville prosjektet hatt to sannheter, og verifikasjonskontrakten forbyr det. Til gjengjeld kjøper R-laget noe konkret: at et annet verktøysett kan reprodusere manifestets sjekksummer og lese hver tabell uten prosjektets egen kode. Klarer det ikke det, er artefaktene mellomregninger og ikke et produkt. Kontrollen kjører i CI, og et hopp over den regnes som feil.
+| Kilde | Rolle | Dekning |
+|---|---|---|
+| [SSB 13585](https://www.ssb.no/statbank/table/13585/) | Salg av petroleumsprodukter, gjeldende serie | 2021M01–2026M06 |
+| [SSB 11174](https://www.ssb.no/statbank/table/11174/), [03687](https://www.ssb.no/statbank/table/03687/) | Salgsserien bakover, med dokumenterte brudd | 1995M01–2022M01 |
+| [SSB 07849](https://www.ssb.no/statbank/table/07849/) | Bestand per 31.12 og drivstofftype | 2008–2025 |
+| [SSB 14020](https://www.ssb.no/statbank/table/14020/), [12906](https://www.ssb.no/statbank/table/12906/) | Førstegangsregistreringer, grov og fin drivlinjedeling | 1995M01–2026M07 |
+| [SSB 12577](https://www.ssb.no/statbank/table/12577/) | Kjørelengder, odometerbasert — uavhengig av salgsstatistikken | 2005–2025 |
+| [SSB 08581](https://www.ssb.no/statbank/table/08581/) | Aldersfordelt bestand; brudd i aldersdefinisjonen 2024 påvist her | 2008–2025 |
+| [SSB 11561](https://www.ssb.no/statbank/table/11561/) | Energibalansens veitransportpost, til avstemming | 1990–2025 |
+| [SSB 13931](https://www.ssb.no/statbank/table/13931/) | Utslippsregnskapet, til fordeling av volum på kjøretøygruppe | 1990–2025 |
+| [SSB 09654](https://www.ssb.no/statbank/table/09654/) | Drivstoffpriser | 1986M08–2026M06 |
 
-## Reproduserbarhet
+To uavhengige målesystemer bærer avstemmingen: salgsstatistikken måler volum omsatt, kjørelengdestatistikken måler trafikkarbeid fra odometeravlesning ved EU-kontroll. Salgsenergi og energibalansens veitransportpost ligger innenfor 0,96–1,01 av hverandre.
+
+## Kjente begrensninger
+
+Disse står her fordi de avgrenser hva som kan konkluderes.
+
+- **Autodiesel kan ikke framskrives i sin helhet.** Person- og varebiler er 55,1 prosent av volumet. Tunge kjøretøy modelleres ikke, fordi kildene ikke gir drivlinjefordelt tilgang og bestand på samme nivå for dem.
+- **Elbilenes overlevelseskurve er belagt bare i begynnelsen.** Sju prosent av bestanden er over åtte år. Ved de estimerte parametrene er overlevelsen til tjue års alder tilnærmet null — det er funksjonsformen som løper forbi observasjonene, ikke et anslag på levetid.
+- **Kjørelengde per kjøretøy er ikke identifisert som mekanisme.** Alder og kalendertid er kollineære i det observerte vinduet; fallet lar seg ikke tilskrive aldring framfor tid.
+- **Utility factor for ladbare hybrider må komme utenfra.** Variasjon i elbilintensiteten innenfor dens eget spenn gir implisert elandel fra under 0 til over 1 — residualen er uinformativ.
+- **Nettoavgang er en residual.** Den omfatter vraking, eksport, avregistrering og omklassifisering, og kildene skiller dem ikke. Overlevelseskurven måler derfor netto overlevelse i det norske registeret, ikke fysisk levetid.
+- **Elektrisitet er modellert, ikke observert.** Det finnes ingen salgsstatistikk for strøm til veitransport; energibalansens post brukes til avstemming, og dens fordelingsmetode er ikke dokumentert i det som er hentet.
+
+## Reproduser
 
 ```
-pip install -e ".[dev]"                      # Python-laget
-python -m veitransport_energi.artifacts      # bygger alle artefakter og manifestet
-pytest                                       # 141 tester, uten nettverk
+pip install -e ".[dev]"
+python -m veitransport_energi.build          # henter, kontrollerer og skriver uttrekk
+python -m veitransport_energi.artifacts      # bygger alle resultatfiler og manifestet
+pytest                                       # 151 tester, uten nettverk
 Rscript R/kontroll_artefakter.R              # uavhengig kontroll av leveransen
-Rscript R/bygg_figurer.R                     # figurene i figurer/
+Rscript R/bygg_figurer.R                     # figurene
 ```
 
-R-laget krever `r-base` med `ggplot2`, `readr`, `dplyr`, `tidyr`, `scales`, `jsonlite`, `digest` og `ragg`, og en UTF-8-locale — uten den ødelegges norske tegn stille under parsing av kildefilene, og oppstartsfilen stanser derfor framfor å produsere figurer med feil tekst.
+Uttrekkene i `data/extracts/` er committet, så testene kjører uten nett. Hvert API-kall er logget med tidspunkt, URL, status og bytes. R-laget krever `r-base` med `ggplot2`, `readr`, `dplyr`, `tidyr`, `scales`, `jsonlite`, `digest`, `ragg` og `knitr`, samt UTF-8-locale — kravet er deklarert i `R/kravpakker.R`, og en test krever at CI installerer hver av dem.
 
-Uttrekkene i `data/extracts/` er committet, så testene kjører uten nett. Hvert API-kall er logget i `docs/command_log.md` og `analysis/design_gate/request_log.csv`.
+## Arbeidsdelingen mellom Python og R
+
+Python eier all beregning: uttrekk, datakontrakter, skjøting, enhetsomregning, modeller, validering og artefaktbygging. R eier framstillingen. Ingen størrelse som ender i en figur eller en tekst, regnes ut i R — filtrering og sammenstilling for framstilling er tillatt, estimering og avledning er det ikke. Ellers ville prosjektet hatt to sannheter.
+
+Til gjengjeld kjøper R-laget en etterprøvbar egenskap Python ikke kan kjøpe selv: at et uavhengig verktøysett kan lese leveransen uten prosjektets egen kode. Klarer det ikke det, er artefaktene mellomregninger og ikke et produkt.
+
+## Åpenhet om KI-bruk
+
+Prosjektet er bygget med KI (Claude) som gjennomgående verktøy — datainnhenting, kontrollberegninger, kode og dokumentutkast — styrt og overprøvd av prosjekteier. Erklæringen skiller på kontrollnivå, fordi nivået faktisk er ulikt:
+
+- **Kontrollert maskinelt:** datakontraktene, skjøtetestene, modellenes tidsdelte validering, samsvaret mellom tall i dokumentene og beregningsresultatene, og at R-laget leser de samme tallene som Python. Alle tester er mutasjonstestet.
+- **Verifisert mot primærkilder:** kildene med kontrollstatus «verifisert» i registeret, med uttrekksdato per kilde.
+- **Under arbeid:** kilder merket som uverifiserte i registeret, og de åpne punktene i beslutningsloggen.
+- **Ansvaret** for faglige valg, tolkninger og publisering ligger hos prosjekteier. Beslutningenes opphav er loggført, og der en tidligere konklusjon er korrigert, står korreksjonen synlig med hva som ble strøket framfor å bli stille omskrevet.
+
+Framtidsrettede resultater vil være framskrivinger og scenarioer, ikke prognoser, og merkes slik.
 
 ## Databruk og lisens
 
-Kode og originalt innhold er MIT-lisensiert ([LICENSE](LICENSE)). Data avledet fra Statistisk sentralbyrå gjenbrukes under [NLOD](https://data.norge.no/nlod/no/2.0) med SSB som kilde; tabellnumre og uttrekksdatoer står i kilderegisteret. Øvrige kilder (Lovdata, Skatteetaten, Miljødirektoratet, NVE, Drivkraft Norge, NOBIL) har vilkår dokumentert per kilde i [source_register.csv](data/metadata/source_register.csv); innhold derfra siteres, men redistribueres ikke her uten avklaring.
+Kode og originalt innhold er MIT-lisensiert ([LICENSE](LICENSE)). Data avledet fra Statistisk sentralbyrå gjenbrukes under [NLOD](https://data.norge.no/nlod/no/2.0) med SSB som kilde; tabellnumre og uttrekksdatoer står i [kilderegisteret](data/metadata/source_register.csv). Øvrige kilder har vilkår dokumentert per kilde der; innhold derfra siteres, men redistribueres ikke.
 
-## KI-erklæring
+## Status og veien videre
 
-En KI-assistent (Claude) har, under prosjekteiers styring og gjennomgang, utført datainnhenting, kontrollberegninger, kode og dokumentutkast. Maskinelt kontrollert: API-uttrekkene (logget), datakontraktene, skjøtetestene, samsvaret mellom siterte tall og beregningsresultater, modellenes tidsdelte validering, og at R-laget leser de samme tallene som Python. Verifisert mot primærkilder: kildene med kontrollstatus «verifisert» i kilderegisteret; uverifiserte punkter er eksplisitt merket der.
+Fase 0 til 3 er gjennomført: designport, datalag med kontrakter og kodebok, publiserbar historisk statistikk med kontrolltabeller, og en strukturell modell med tidsdelt validering. Prognosemodul ble avvist i metodeporten, men avvisningen er under fornyet vurdering i en smalere form — årlig korttidshorisont, der den fossile bilparken er nær predeterminert og en prognose derfor er testbar.
 
-Framtidsrettede resultater vil være framskrivinger og scenarioer, ikke prognoser, og merkes slik. Faglige beslutninger, godkjenninger og all publisering er prosjekteiers ansvar; beslutningenes opphav er loggført i [decision_log.md](docs/decision_log.md), der også tilfeller der assistenten korrigerer sitt eget tidligere arbeid, står med dato og begrunnelse.
+Fase 5 (scenarioer og usikkerhet), fase 6 (beslutningsflate, rådgivernotat, metodenote) og fase 7 (releaserevisjon) gjenstår. Arbeidet skjer i fasebrancher med gjennomgåbare pull requests; `main` er releasegren.
