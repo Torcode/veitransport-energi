@@ -23,6 +23,7 @@ from . import __version__
 from .assumptions import assumption_register
 from .checks import control_tables
 from .series import build_historical_statistics
+from .stockflow import inflow_by_drivetrain
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 ARTIFACTS = os.path.join(ROOT, "artifacts")
@@ -66,6 +67,7 @@ def build_all() -> dict:
     os.makedirs(ARTIFACTS, exist_ok=True)
     written: dict[str, pd.DataFrame] = {
         "historical_statistics.csv": build_historical_statistics(),
+        "inflow_by_drivetrain.csv": inflow_by_drivetrain(),
         "assumption_register.csv": assumption_register(),
     }
     for navn, df in control_tables().items():

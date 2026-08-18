@@ -4,9 +4,31 @@
 
 Hvordan utskiftingen av person- og varebilparken omsettes i etterspørsel etter bensin, autodiesel og elektrisitet — historisk fra 1995, og i betingede scenarioer fram mot 2035. Bygget for beslutninger der etterspørselsbanen er premisset: avgiftsproveny som faller ulikt for bensin og diesel, dimensjonering av ladeinfrastruktur, og vurdering av hvor lenge en fossil restetterspørsel blir stående.
 
+![De tre energibanene](figurer/energibaner.png)
+
+Figuren viser energien som faktisk går til veitransport, fordelt på de tre
+bærerne, i petajoule per år. Den er førstevisningen fordi den er spørsmålet:
+alt annet i dette repoet er begrunnelse for hvordan disse tre linjene er
+framkommet og hva som kan sies om deres fortsettelse. Mønsteret kommer av at
+bensinparken har blitt skiftet ut i tjue år mens dieselparken vokste til 2015 og
+siden har falt langsommere. Begrensningen som følger med: postene er
+energibalansens, elektrisitetsposten er modellert av SSB og dens fordelingsmetode
+er ikke dokumentert i det som er hentet — derfor er den linjen stiplet.
+
 ## Hovedfunnet
 
 **Den spaken norske omstillingsanalyser vanligvis betinger på, er brukt opp.** Elandelen av nyregistrerte personbiler var 94,8 prosent i 2025; bensin og diesel utgjorde 2,2 prosent til sammen. Forskjellen mellom et scenario med 95 og ett med 100 prosent er to prosent av nyregistreringene i én årgang. Den fossile tilgangen til personbilparken var 4 100 biler mot en fossil bestand på 1,6 millioner — **0,25 prosent**. Neste års fossile bilpark er i praksis allerede bestemt.
+
+![Tilgang mot avgang i den fossile personbilparken](figurer/fossil_tilgang_mot_avgang.png)
+
+Figuren viser de to strømmene inn og ut av den fossile personbilparken, begge
+målt mot bestanden ved inngangen til året. Den er relevant fordi et scenario om
+nyregistreringer virker gjennom den øverste linjen, og den er nå så lav at
+avstanden til den nederste avgjør utfallet alene. Mønsteret oppstår ved at
+tilgangsraten har falt til under en åttendedel siden 2019 mens avgangsraten har
+ligget flatt mellom fire og sju prosent. Begrensningen: avgangen er en residual som også
+rommer eksport, avregistrering og omklassifisering, og serien starter i 2019
+fordi den detaljerte drivstoffklassifikasjonen gjør det.
 
 Usikkerheten har flyttet seg til tre andre steder, og alle tre er tallfestet her:
 
@@ -14,11 +36,32 @@ Usikkerheten har flyttet seg til tre andre steder, og alle tre er tallfestet her
 
 **Hvor mye de gjenværende fossile bilene kjøres.** Kjørelengden per bensinbil har falt fra 10 160 til 8 060 km i året siden 2016, per dieselbil fra 15 430 til 12 420, mens elbilene har gått fra 11 910 til 13 530. I nivå ser fallet strukturelt ut — korrelasjonen med modellert flåtealder er −0,978 — men i førstedifferanser forsvinner sammenhengen (−0,03). Alder og kalendertid er nær kollineære i vinduet, så mekanismen er ikke identifisert, og størrelsen bæres som scenarioforutsetning framfor som estimert relasjon.
 
+![Elbilenes andel av bestanden mot andelen av kjørte kilometer](figurer/elandel_bestand_mot_kjorelengde.png)
+
+Figuren viser to andeler for personbiler: hvor stor del av bestanden som er
+elektrisk, og hvor stor del av trafikkarbeidet elbilene utfører. Skillet er
+beslutningsrelevant fordi det er kilometerne, ikke bilene, som fortrenger
+drivstoff — en framskriving som regner om bestandsandel til energibruk uten
+dette leddet, undervurderer fortrengningen. At kjørelengdeandelen ligger *over*
+bestandsandelen, følger av at bestanden telles 31.12 mens kilometerne gjelder
+hele året; for en flåte i vekst gjør det nevneren for stor. Utslaget går altså i
+retning av å undervurdere elbilenes andel, ikke motsatt.
+
 **Hvem som bruker drivstoffet.** Personbilene kjører 56,3 prosent av dieselkilometerne, men bruker 33,0 prosent av dieselen; tunge kjøretøy kjører 13,7 prosent og bruker 44,9 prosent. Fordelingen er utledet av utslippsregnskapet uten at noen utslippsfaktor er antatt — CO2 per liter er en egenskap ved drivstoffet, ikke ved kjøretøyet, så forholdstallene mellom gruppene *er* volumandeler.
 
-Konsekvensen for hva produktet kan påstå er skarp: bensinetterspørselen er i praksis en personbilhistorie (91,8 prosent av volumet ligger innenfor estimandet), mens person- og varebiler bare er 55,1 prosent av autodieselvolumet. En framskriving for disse gruppene er derfor ikke en framskriving av autodieselsalget, og resultatfilene sier det i navnet.
+![Kilometerandel mot volumandel, per energibærer](figurer/km_mot_volum.png)
 
-![Salget av bensin og autodiesel](figurer/salg_segmentert.png)
+Figuren viser hvor stor del av hver energibærers kilometer og volum som ligger
+innenfor person- og varebiler. Den er relevant fordi den avgjør hva en
+framskriving for disse gruppene har lov til å hete: for bensin er de to nesten
+sammenfallende, for autodiesel er de det ikke, og gapet har vokst fra 23 til 31
+prosentpoeng siden 2005. Mønsteret kommer av at tunge kjøretøy bruker mange
+ganger mer drivstoff per kilometer enn lette. Begrensningen: kilometerandelen er
+observert i kjørelengdestatistikken og volumandelen utledet av
+utslippsregnskapet, og gruppene er ikke identisk avgrenset i de to kildene, så
+sammenstillingen er omtrentlig.
+
+Konsekvensen for hva produktet kan påstå er skarp: bensinetterspørselen er i praksis en personbilhistorie (91,8 prosent av volumet ligger innenfor estimandet), mens person- og varebiler bare er 55,1 prosent av autodieselvolumet. En framskriving for disse gruppene er derfor ikke en framskriving av autodieselsalget, og resultatfilene sier det i navnet.
 
 > **Uavhengig prosjekt.** Dette er et privat fag- og porteføljeprosjekt. Det er ikke utført på oppdrag fra, eller i samarbeid med, Statistisk sentralbyrå, Statens vegvesen, NVE eller andre av kildeeierne. Alt datagrunnlag er offentlig og aggregert; ingen person- eller registerdata inngår.
 
@@ -30,13 +73,22 @@ Rekkefølgen er ikke tilfeldig — hvert ledd forutsetter leddet før.
 
 2. **Bruddene er funnet, ikke glattet.** Salgsserien skjøtes bare der skjøten er empirisk testet i overlappsmånedene; autodieselserien er delt ved innsamlingsbruddet i 2020 og tegnes med synlig avbrudd. Ved forberedelsen av kohortmodellen ble et udokumentert brudd i SSBs aldersdefinisjon mellom 2023 og 2024 funnet, og kohortsporing over grensen er sperret i koden.
 
+   ![Salget av bensin og autodiesel](figurer/salg_segmentert.png)
+
+   Figuren viser årlig salg av bensin og autodiesel, og er tatt med her framfor
+   over brettet fordi den bærer et metodepoeng og ikke et hovedfunn: hullet i
+   autodieselserien er dens viktigste egenskap. Bensinserien er skjøtt over tre
+   kilder fordi skjøtene er testet i overlappsmånedene; autodieselserien er delt
+   ved innsamlingsbruddet i 2020 og tegnes med synlig avbrudd. Begrensningen:
+   nivåforskjellen over bruddet kan ikke leses som utvikling.
+
 3. **Modellen er validert tidsdelt, mot en enklere referanse.** Parametrene estimeres på 2009–2015 og måles mot 2016–2025 uten overlapp; funksjonen nekter å kjøre ved overlapp. Avviket over de ti årene som ikke inngikk, er 0,03–2,03 prosent, mot 6,8 og 7,3 prosent for den enkle rate-modellen som beholdes i koden som baseline. Kompleksiteten er dermed dokumentert berettiget framfor forutsatt.
 
 4. **Usikkerheten er målt der den finnes, og navngitt der den ikke lar seg måle.** Overlevelsesparametrenes spenn kommer fra reestimering på rullerende vinduer, ikke fra profilering av tilpasningen — profilen er fire ganger smalere og ville vært falsk presisjon. Utility factor for ladbare hybrider er vist å være uidentifiserbar fra prosjektets data og behandles som ekstern sensitivitetsparameter. Bare sju prosent av elbilbestanden er over åtte år, så overlevelseskurvens hale er ekstrapolasjon, og det står i registeret.
 
 5. **Leveransen er brukbar uten prosjektets egen kode.** Alle resultatfiler er bundet til datavintage, kodeversjon og commit i et manifest, og et uavhengig R-lag reproduserer manifestets sjekksummer og leser hver tabell uten å røre Python-koden. Kontrollen kjører i CI og kan ikke hoppes over stille.
 
-151 tester kjører uten nettverk mot committede uttrekk. Hver av dem er vist å kunne feile ved mutasjon før den ble beholdt — også testene som håndhever begrepsdisiplinen i dokumentene.
+160 tester kjører uten nettverk mot committede uttrekk. Hver av dem er vist å kunne feile ved mutasjon før den ble beholdt — også testene som håndhever begrepsdisiplinen i dokumentene.
 
 ## Les arbeidet
 
@@ -45,7 +97,7 @@ Rekkefølgen er ikke tilfeldig — hvert ledd forutsetter leddet før.
 | [`notat/hva_vi_vet.qmd`](notat/hva_vi_vet.qmd) | Statusnotatet: hver figur med hva den viser, hvorfor den er relevant, hvordan dataene produserer mønsteret og hvilke begrensninger som gjelder |
 | [`docs/04_scenario_design.md`](docs/04_scenario_design.md) | Hva scenarioene betinger på, hva estimandet dekker, og hvorfor den vanlige framgangsmåten ikke duger her |
 | [`docs/01_design_gate.md`](docs/01_design_gate.md) | Datamatrise, sammenlignbarhetsanalyse og identifikasjonsproblemene som styrer alt senere |
-| [`docs/decision_log.md`](docs/decision_log.md) | 35 daterte beslutninger med alternativer, evidens og opphav — også de der tidligere konklusjoner er korrigert |
+| [`docs/decision_log.md`](docs/decision_log.md) | 37 daterte beslutninger med alternativer, evidens og opphav — også de der tidligere konklusjoner er korrigert |
 | [`artifacts/`](artifacts/) | Alle resultatfiler med manifest; ingen hovedtall finnes to steder |
 
 ## Datagrunnlaget
@@ -83,7 +135,7 @@ Disse står her fordi de avgrenser hva som kan konkluderes.
 pip install -e ".[dev]"
 python -m veitransport_energi.build          # henter, kontrollerer og skriver uttrekk
 python -m veitransport_energi.artifacts      # bygger alle resultatfiler og manifestet
-pytest                                       # 151 tester, uten nettverk
+pytest                                       # 160 tester, uten nettverk
 Rscript R/kontroll_artefakter.R              # uavhengig kontroll av leveransen
 Rscript R/bygg_figurer.R                     # figurene
 ```

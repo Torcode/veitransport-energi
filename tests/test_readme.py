@@ -146,3 +146,48 @@ def test_readme_lister_artefaktmappen_som_manifestet_kjenner():
         manifest = json.load(f)
     pa_disk = {n for n in os.listdir(os.path.join(ROOT, "artifacts")) if n.endswith(".csv")}
     assert pa_disk == set(manifest["artifacts"])
+
+
+def test_hovedfunnets_spaketall_stemmer_med_tilgangstabellen(readme):
+    """Forsidens mest siterte setning hadde ingen testdekning før dette (D-0036).
+
+    Tallene kom fra en beregning som aldri ble publisert, så de kunne ikke leses
+    tilbake fra noe. Nå ligger de i `inflow_by_drivetrain.csv`, som er bygget på
+    den detaljerte drivstoffklassifikasjonen — den samme som bestandstabellen
+    bruker, slik at teller og nevner står på samme kodeverk.
+    """
+    d = pd.read_csv(os.path.join(ROOT, "artifacts", "inflow_by_drivetrain.csv"),
+                    dtype={"periode": str})
+    p = d[(d["gruppe"] == "personbiler") & (d["periode"] == "2025")].set_index("drivlinje")
+
+    assert _norsk(p.loc["elektrisitet", "andel_av_tilgang_pct"]) in readme, "elandelen mangler"
+    assert _norsk(p.loc["fossil_bensin_diesel", "andel_av_tilgang_pct"]) in readme, (
+        "den fossile andelen av nyregistreringene mangler"
+    )
+    antall = f"{int(p.loc['fossil_bensin_diesel', 'tilgang']):,}".replace(",", " ")
+    assert antall in readme, f"fossil tilgang ({antall} biler) mangler"
+    assert _norsk(p.loc["fossil_bensin_diesel", "tilgang_pct_av_bestand"], 2) in readme, (
+        "forholdstallet tilgang mot bestand mangler"
+    )
+    bestand = _norsk(p.loc["fossil_bensin_diesel", "bestand_3112"] / 1e6)
+    assert f"{bestand} millioner" in readme, f"fossil bestand ({bestand} millioner) mangler"
+
+
+def test_hver_bygget_figur_vises_et_sted(readme):
+    """En figur som ingen ser, er ikke en leveranse — og var utgangspunktet her.
+
+    Repoet hadde en figur bygget og registrert i sporet uten at den sto på
+    forsiden, mens forsidens hovedfunn ikke hadde noen figur i det hele tatt.
+    Testen krever at hver figur i sporet faktisk vises i README eller notatet.
+    """
+    spor_sti = os.path.join(ROOT, "figurer", "figurspor.json")
+    if not os.path.exists(spor_sti):
+        pytest.skip("figurer/figurspor.json mangler — kjør Rscript R/bygg_figurer.R")
+    with open(spor_sti, encoding="utf-8") as f:
+        spor = json.load(f)
+    with open(os.path.join(ROOT, "notat", "hva_vi_vet.qmd"), encoding="utf-8") as f:
+        notat = f.read()
+    for navn in spor["figurer"]:
+        assert navn in readme or navn in notat, (
+            f"{navn} bygges, men vises verken på forsiden eller i notatet"
+        )

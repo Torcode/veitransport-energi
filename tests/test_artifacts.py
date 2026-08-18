@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 
+import pandas as pd
 import pytest
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -97,3 +98,57 @@ def test_figursporet_peker_paa_manifestet_som_ligger_her():
     for navn, info in spor["figurer"].items():
         assert os.path.exists(os.path.join(ROOT, "figurer", navn)), f"{navn} mangler"
         assert info["tittel"].strip(), f"{navn} mangler tittel i sporet"
+
+
+def test_figurtitlene_stemmer_med_artefaktene():
+    """Påstandstitler er påstander, og skal kunne bli usanne.
+
+    En figurtittel som «forlater 26 parken» er et hovedtall på linje med et tall
+    i README. Sporet fører titlene, så kontrollen kan gjøres i Python uten at R
+    er installert — den fanger drift lokalt, før en push.
+    """
+    spor_sti = os.path.join(ROOT, "figurer", "figurspor.json")
+    if not os.path.exists(spor_sti):
+        pytest.skip("figurer/figurspor.json mangler — kjør Rscript R/bygg_figurer.R")
+    with open(spor_sti, encoding="utf-8") as f:
+        titler = {n: i["tittel"] for n, i in json.load(f)["figurer"].items()}
+
+    t = pd.read_csv(os.path.join(ROOT, "artifacts", "inflow_by_drivetrain.csv"),
+                    dtype={"periode": str})
+    f = t[(t["gruppe"] == "personbiler") & (t["drivlinje"] == "fossil_bensin_diesel")
+          & (t["periode"] == "2025")].iloc[0]
+    forhold = round(f["avgangsrate_pct"] / f["tilgang_pct_av_bestand_forrige"])
+    assert str(int(forhold)) in titler["fossil_tilgang_mot_avgang.png"], (
+        f"figurtittelen oppgir ikke forholdet mellom avgang og tilgang ({forhold:.0f})"
+    )
+
+    v = pd.read_csv(os.path.join(ROOT, "artifacts", "control_volume_vs_distance.csv"),
+                    dtype={"periode": str})
+    d = v[(v["energibaerer"] == "diesel") & (v["periode"] == v["periode"].max())].iloc[0]
+    for kolonne in ("andel_innenfor_estimandet_pct", "andel_innenfor_volum_pct"):
+        assert f"{d[kolonne]:.0f} prosent" in titler["km_mot_volum.png"], (
+            f"figurtittelen mangler {kolonne} ({d[kolonne]:.0f} prosent)"
+        )
+
+    e = pd.read_csv(os.path.join(ROOT, "artifacts", "reconstruction_intensity_bounds.csv"),
+                    dtype={"periode": str})
+    siste = e[(e["periode"] == e["periode"].max()) & (e["utility_factor"] == 0)]
+    energi = siste.set_index("energibaerer")["energi_PJ"]
+    assert energi["elektrisitet"] < energi["bensin"], (
+        "figurtittelen påstår at elektrisiteten er mindre enn bensinen; "
+        f"nå er den {energi['elektrisitet']:.1f} mot {energi['bensin']:.1f} PJ"
+    )
+
+
+def test_hver_figur_leser_fra_et_artefakt_manifestet_kjenner(manifest):
+    """Sporet oppgir hvilket artefakt hver figur hviler på; det skal finnes."""
+    spor_sti = os.path.join(ROOT, "figurer", "figurspor.json")
+    if not os.path.exists(spor_sti):
+        pytest.skip("figurer/figurspor.json mangler — kjør Rscript R/bygg_figurer.R")
+    with open(spor_sti, encoding="utf-8") as f:
+        spor = json.load(f)
+    for navn, info in spor["figurer"].items():
+        kilde = info.get("bygget_fra_artefakt", "")
+        assert kilde in manifest["artifacts"], (
+            f"{navn} oppgir grunnlaget '{kilde}', som ikke står i manifestet"
+        )
