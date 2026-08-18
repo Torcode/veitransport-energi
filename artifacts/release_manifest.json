@@ -1,6 +1,6 @@
 {
- "built_utc": "2026-08-14T04:31:01+00:00",
- "git_commit": "4bd0d50e5220cddd8a1a687e42dc2ed000923334",
+ "built_utc": "2026-08-18T21:33:58+00:00",
+ "git_commit": "01a9c1be5791569f24a9969240dcfebe2c84fa09",
  "arbeidstre": "endret",
  "code_version": "0.1.0",
  "python": "3.11.15",
@@ -77,6 +77,10 @@
    "rows": 1418,
    "sha256": "b05c49c54081e38ceb4b15496a782f01aa6401884ef51be2ae59fbc6e5e4f93c"
   },
+  "inflow_by_drivetrain.csv": {
+   "rows": 84,
+   "sha256": "34e98491bc72f156c0fad025bff18c34de569b67eb9cec21b29771344b1b5bfb"
+  },
   "assumption_register.csv": {
    "rows": 8,
    "sha256": "f0fbcddcedcf6c3be7a0771f0c2795a85a0ad265ce3cf310282c47ad9eae2dda"
@@ -144,6 +148,10 @@
   "control_mileage_identification.csv": {
    "rows": 2,
    "sha256": "f22f8e55a01b95b9edd0fa8e8f1f55dcf7d0ef49d53a47eb5edfc49f5ae3ae03"
+  },
+  "control_inflow_source.csv": {
+   "rows": 70,
+   "sha256": "6530c0fc737b2f0d519e59276c4fb517bdd267ba89f2998e943f91a7868a16c7"
   }
  },
  "merknad": "Artefaktene inneholder kun observerte, konstruerte og estimerte størrelser. Framskrivinger og scenarioer hører til fase 5 og finnes ikke her. git_commit er treets tilstand da artefaktene ble bygget; er arbeidstre 'endret', ble de bygget før commit, og den endelige commiten er en etterkommer."

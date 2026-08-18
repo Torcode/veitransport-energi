@@ -119,3 +119,81 @@ def inflow_source_comparison() -> pd.DataFrame:
             "bobilandel_pct": bo / (vb + bo) * 100,
         })
     return pd.DataFrame(rows)
+
+
+# De to registreringstabellene bruker hvert sitt kodeverk for drivstoff. 14020 har
+# fire aggregerte kategorier, 12906 har SSBs detaljerte klassifikasjon. Kartet under
+# er den mest velvillige oversettelsen mellom dem — og kontrollen under viser at den
+# likevel ikke gir samme tall.
+INFLOW_CATEGORY_MAP: dict[str, dict[str, list[str]]] = {
+    "nullutslipp": {"14020": ["19"], "12906": ["5", "13"]},
+    "fossil": {"14020": ["20"], "12906": ["1", "2"]},
+    "hybrid": {"14020": ["21"], "12906": ["14", "15", "16", "17"]},
+    "annet": {"14020": ["6"], "12906": ["3", "4", "6"]},
+}
+
+# Kjøretøygrupper: 14020 kan ikke skille bobiler fra varebiler, så vare-gruppen
+# sammenlignes mot summen Varebil4 + Bobiler i 12906.
+INFLOW_GROUP_MAP: dict[str, dict[str, list[str]]] = {
+    "personbiler": {"14020": ["Personbiler"], "12906": ["Personbil1"]},
+    "vare_og_camping": {"14020": ["VareCampBiler"], "12906": ["Varebil4", "Bobiler"]},
+}
+
+INFLOW_SOURCE_NOTE = (
+    "de to førstegangsregistreringstabellene beskriver samme populasjon, men med hvert "
+    "sitt drivstoffkodeverk: 14020 har fire aggregerte kategorier, 12906 har SSBs "
+    "detaljerte klassifikasjon — den samme som bestandstabellen 07849 bruker. Et "
+    "forholdstall mellom tilgang og bestand skal derfor bygges på 12906 (D-0036). "
+    "To ulike avvik ligger i tabellen. Det ene er systematisk: fossilkategorien skiller "
+    "seg med 67–133 kjøretøy hvert år fra 2020, et nesten konstant antall, mens den "
+    "relative forskjellen vokser fra 0,5 til 2,8 prosent fordi den fossile tilgangen "
+    "kollapser under den. Det andre gjelder totalen og opptrer bare i randårene 2019 og "
+    "2025 (1,2 og 1,4 prosent); mekanismen bak det er ikke identifisert fra det som er "
+    "hentet, og noteres framfor å bli glattet"
+)
+
+
+def inflow_source_by_drivetrain() -> pd.DataFrame:
+    """14020 mot 12906, i alt og per drivlinjeaggregat.
+
+    `inflow_source_comparison` viser at totalene nesten stemmer. Denne viser hvor
+    de ikke gjør det, og er grunnen til at valget av tilgangskilde ikke er
+    likegyldig: i 2025 fører 14020 flere kjøretøy som fossile og færre som
+    nullutslipp enn den detaljerte klassifikasjonen gjør. Forskjellen er liten i
+    prosent av totalen og stor i prosent av den fossile tilgangen, som er nettopp
+    den størrelsen forsidens hovedfunn hviler på.
+    """
+    f0 = read_extract("firstreg_14020").copy()
+    f0["aar"] = f0["Tid"].astype(str).str[:4]
+    hele = f0.groupby("aar")["Tid"].nunique().pipe(lambda x: x[x == 12].index)
+    f0 = f0[f0["aar"].isin(hele)]
+    f9 = read_extract("firstreg_12906").copy()
+    f9["aar"] = f9["Tid"].astype(str)
+
+    def sum_av(d: pd.DataFrame, grupper: list[str], koder: list[str] | None) -> pd.Series:
+        u = d[d["ContentsCode"].isin(grupper)]
+        if koder is not None:
+            u = u[u["DrivstoffType"].isin(koder)]
+        return u.groupby("aar")["value"].sum()
+
+    rader = []
+    aar_felles = sorted(set(f0["aar"]) & set(f9["aar"]))
+    for gruppe, gk in INFLOW_GROUP_MAP.items():
+        kategorier = {"i_alt": {"14020": None, "12906": None}, **INFLOW_CATEGORY_MAP}
+        for kategori, kk in kategorier.items():
+            a0 = sum_av(f0, gk["14020"], kk["14020"])
+            a9 = sum_av(f9, gk["12906"], kk["12906"])
+            for aar in aar_felles:
+                v0, v9 = float(a0.get(aar, 0.0)), float(a9.get(aar, 0.0))
+                rader.append({
+                    "kontroll": "tilgangskilde_14020_mot_12906",
+                    "gruppe": gruppe,
+                    "kategori": kategori,
+                    "periode": aar,
+                    "antall_14020": int(round(v0)),
+                    "antall_12906": int(round(v9)),
+                    "avvik_antall": int(round(v9 - v0)),
+                    "avvik_pct": (v9 / v0 - 1) * 100 if v0 else float("nan"),
+                    "merknad": INFLOW_SOURCE_NOTE,
+                })
+    return pd.DataFrame(rader)

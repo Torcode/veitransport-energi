@@ -1,13 +1,25 @@
 {
   "kodeversjon": "0.1.0",
-  "manifest_sha256": "4932147b7a190b17df980a83097d16dec1553c8345b34b64a1f31e8c6c2df913",
+  "manifest_sha256": "8f1662481c58fb12d798f9d76fa36cd7591b61bd9410477c6670458ba7978d07",
   "figurer": {
-    "salg_segmentert.png": {
-      "tittel": "Salget av bensin og autodiesel faller, men kildene tåler ikke én linje",
-      "bygget_fra_artefakt": "historical_statistics.csv"
+    "energibaner.png": {
+      "tittel": "Elektrisiteten er ennå mindre enn bensinen",
+      "bygget_fra_artefakt": "reconstruction_intensity_bounds.csv"
+    },
+    "fossil_tilgang_mot_avgang.png": {
+      "tittel": "For hver fossile personbil som kommer inn, forlater 26 parken",
+      "bygget_fra_artefakt": "inflow_by_drivetrain.csv"
+    },
+    "km_mot_volum.png": {
+      "tittel": "86 prosent av dieselkilometerne, 55 prosent av dieselen",
+      "bygget_fra_artefakt": "control_volume_vs_distance.csv"
     },
     "elandel_bestand_mot_kjorelengde.png": {
       "tittel": "Elbilene kjører mer enn resten av parken, ikke mindre",
+      "bygget_fra_artefakt": "historical_statistics.csv"
+    },
+    "salg_segmentert.png": {
+      "tittel": "Salget av bensin og autodiesel faller, men kildene tåler ikke én linje",
       "bygget_fra_artefakt": "historical_statistics.csv"
     }
   }

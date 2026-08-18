@@ -165,3 +165,83 @@ def backcast(gruppe: str, resolution: str, calib_years: list[str],
                 "avgangsrate": rater[drivlinje],
             })
     return pd.DataFrame(rows)
+
+
+# Drivlinjer som utgjør fossilt drivstoff i den detaljerte klassifikasjonen.
+# Aggregatet er bygget av kode 1 og 2 i SSBs drivstoffklassifikasjon, og er
+# bevisst IKKE det samme som kategorien «Fossil» i 14020 — se D-0036 og
+# control_inflow_source.csv.
+FOSSIL_FINE = ("bensin", "diesel")
+
+INFLOW_NOTE = (
+    "tilgang er førstegangsregistreringer, nye og bruktimporterte, fra SSB 12906 med "
+    "detaljert drivstoffklassifikasjon; bestand er per 31.12 fra SSB 07849 med samme "
+    "klassifikasjon. Teller og nevner står derfor på samme kodeverk. Den grove "
+    "modellens tilgangsledd i reconstruction_net_retirement.csv kommer fra 14020, "
+    "hvis firedelte drivlinjeaggregat er en annen variabel (D-0036); avviket er målt i "
+    "control_inflow_source.csv. Aggregatet fossil_bensin_diesel er summen av de to "
+    "detaljerte kodene, ikke 14020s kategori «Fossil»"
+)
+
+
+def inflow_by_drivetrain() -> pd.DataFrame:
+    """Drivlinjedelt tilgang mot bestand, publiserbar.
+
+    Tallene har hele tiden vært regnet ut av `load_model_data`, men bare vært
+    tilgjengelige for Python. Forsidens hovedfunn hviler på dem, og R-laget leser
+    bare `artifacts/` — uten denne tabellen måtte en figur enten hentes fra den
+    grove kilden og vise et annet tall enn teksten, eller regne ut sitt eget
+    hovedtall i framstillingslaget. Begge deler er forbudt.
+
+    Forholdstallet publiseres ferdig utregnet av samme grunn: en figur som deler
+    to publiserte tall på hverandre, avleder, og avledning hører til Python.
+
+    To nevnere publiseres med vilje. `tilgang_pct_av_bestand` måler mot bestanden
+    ved utgangen av året og er den forsiden siterer; `tilgang_pct_av_bestand_forrige`
+    måler mot inngangsbestanden og er den eneste som kan stilles ved siden av
+    avgangsraten, siden den bruker samme nevner. Å blande de to i én figur ville
+    gitt et forholdstall mellom rater som ikke svarer til forholdet mellom antall.
+
+    Nettoavgangen er den samme residualen som i D-0022, men regnet på den
+    detaljerte klassifikasjonen: her står tilgang (12906) og bestand (07849) på
+    samme kodeverk, mens den grove tabellen kombinerer to. Vinduet er kort —
+    12906 starter i 2019 — og det er prisen for at leddene svarer til hverandre.
+    """
+    rader = []
+    for gruppe in STOCK_VARIABLE:
+        d = load_model_data(gruppe, "fin")
+        for aar in d.inflow.index:
+            if aar not in d.stock.index:
+                continue
+            forrige = str(int(aar) - 1)
+            total = d.inflow.loc[aar].sum()
+            linjer = {dl: float(d.inflow.loc[aar, dl]) for dl in d.inflow.columns}
+            linjer["fossil_bensin_diesel"] = sum(linjer[dl] for dl in FOSSIL_FINE)
+            bestand = {dl: float(d.stock.loc[aar, dl]) for dl in d.stock.columns}
+            bestand["fossil_bensin_diesel"] = sum(bestand[dl] for dl in FOSSIL_FINE)
+            if forrige in d.stock.index:
+                forr = {dl: float(d.stock.loc[forrige, dl]) for dl in d.stock.columns}
+                forr["fossil_bensin_diesel"] = sum(forr[dl] for dl in FOSSIL_FINE)
+            else:
+                forr = {}
+            for drivlinje, tilgang in linjer.items():
+                b = bestand[drivlinje]
+                b0 = forr.get(drivlinje)
+                netto = b0 + tilgang - b if b0 is not None else None
+                rader.append({
+                    "gruppe": gruppe,
+                    "drivlinje": drivlinje,
+                    "periode": aar,
+                    "tilgang": int(round(tilgang)),
+                    "andel_av_tilgang_pct": tilgang / total * 100 if total else float("nan"),
+                    "bestand_3112": int(round(b)),
+                    "tilgang_pct_av_bestand": tilgang / b * 100 if b else float("nan"),
+                    "bestand_forrige": int(round(b0)) if b0 is not None else None,
+                    "tilgang_pct_av_bestand_forrige": (tilgang / b0 * 100) if b0 else float("nan"),
+                    "nettoavgang": int(round(netto)) if netto is not None else None,
+                    "avgangsrate_pct": (netto / b0 * 100) if b0 else float("nan"),
+                    "status": "observert" if netto is None else "konstruert",
+                    "kilde": "SSB 12906 (tilgang) og SSB 07849 (bestand)",
+                    "merknad": INFLOW_NOTE,
+                })
+    return pd.DataFrame(rader)

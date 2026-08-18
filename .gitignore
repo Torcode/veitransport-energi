@@ -5,6 +5,12 @@ __pycache__/
 venv/
 .ipynb_checkpoints/
 
+# setuptools' byggemetadata for redigerbar installasjon. Katalogen ble sporet fra
+# første datalagscommit (#5) og skrives om av hvert `pip install -e .`, så et rent
+# tre ble skittent av selve installasjonen og ekte endringer druknet i
+# `git status`. Den er generert, ikke kildekode.
+src/*.egg-info/
+
 # OS/redigering
 .DS_Store
 Thumbs.db
