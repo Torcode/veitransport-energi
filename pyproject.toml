@@ -8,7 +8,6 @@ version = "0.1.0"
 description = "Datalag og modeller for energiomstillingen i norsk veitransport"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
 dependencies = [
     "pandas>=2.0",
     "numpy>=1.24",

@@ -97,7 +97,7 @@ Rekkefølgen er ikke tilfeldig — hvert ledd forutsetter leddet før.
 | [`notat/hva_vi_vet.qmd`](notat/hva_vi_vet.qmd) | Statusnotatet: hver figur med hva den viser, hvorfor den er relevant, hvordan dataene produserer mønsteret og hvilke begrensninger som gjelder |
 | [`docs/04_scenario_design.md`](docs/04_scenario_design.md) | Hva scenarioene betinger på, hva estimandet dekker, og hvorfor den vanlige framgangsmåten ikke duger her |
 | [`docs/01_design_gate.md`](docs/01_design_gate.md) | Datamatrise, sammenlignbarhetsanalyse og identifikasjonsproblemene som styrer alt senere |
-| [`docs/decision_log.md`](docs/decision_log.md) | 37 daterte beslutninger med alternativer, evidens og opphav — også de der tidligere konklusjoner er korrigert |
+| [`docs/decision_log.md`](docs/decision_log.md) | 38 daterte beslutninger med alternativer, evidens og opphav — også de der tidligere konklusjoner er korrigert |
 | [`artifacts/`](artifacts/) | Alle resultatfiler med manifest; ingen hovedtall finnes to steder |
 
 ## Datagrunnlaget
@@ -159,9 +159,9 @@ Prosjektet er bygget med KI (Claude) som gjennomgående verktøy — datainnhent
 
 Framtidsrettede resultater vil være framskrivinger og scenarioer, ikke prognoser, og merkes slik.
 
-## Databruk og lisens
+## Databruk og rettigheter
 
-Kode og originalt innhold er MIT-lisensiert ([LICENSE](LICENSE)). Data avledet fra Statistisk sentralbyrå gjenbrukes under [NLOD](https://data.norge.no/nlod/no/2.0) med SSB som kilde; tabellnumre og uttrekksdatoer står i [kilderegisteret](data/metadata/source_register.csv). Øvrige kilder har vilkår dokumentert per kilde der; innhold derfra siteres, men redistribueres ikke.
+Repoet er offentlig for å kunne leses, etterprøves og siteres. Det er **ingen gjenbrukslisens** på kode og originalt innhold; alminnelig opphavsrett gjelder. Sitatretten og retten til å gjengi og bestride selve funnene følger av loven og berøres ikke — opphavsretten verner uttrykket, ikke tallene. Data fra Statistisk sentralbyrå gjenbrukes under [NLOD](https://data.norge.no/nlod/no/2.0) med SSB som kilde; den lisensen ligger på dataene og er ikke vår å gi eller ta bort. Vilkår per kilde står i [kilderegisteret](data/metadata/source_register.csv), og det fullstendige forbeholdet i [NOTICE.md](NOTICE.md).
 
 ## Status og veien videre
 
